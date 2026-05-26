@@ -6,9 +6,11 @@ import os
 from xgboost import XGBClassifier
 from sklearn.metrics import roc_auc_score
 
-DATA_PATH = "data/processed/processed_food_crisis_data.csv"
-PARAMS_PATH = "visuals/tables/xgb_best_params.csv"
-OUT_FIG = "visuals/figures"
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)
+DATA_PATH   = os.path.join(PROJECT_ROOT, "data", "processed", "processed_food_crisis_data.csv")
+PARAMS_PATH = os.path.join(PROJECT_ROOT, "visuals", "tables", "xgb_best_params.csv")
+OUT_FIG     = os.path.join(PROJECT_ROOT, "visuals", "figures")
 os.makedirs(OUT_FIG, exist_ok=True)
 
 df = pd.read_csv(DATA_PATH)
@@ -79,4 +81,4 @@ plt.savefig(f"{OUT_FIG}/21_shap_dependence.png", dpi=150, bbox_inches="tight")
 plt.close()
 print(f"21_shap_dependence.png saved. (Top feature: {top_feature})")
 
-print("\nDone. All SHAP figures saved to visuals/figures.")
+
