@@ -63,7 +63,7 @@ Using past price movements and a country's current food insecurity score, can a 
 ### Research Question 3
 What are the most effective factors in determining crisis risk: product type, country vulnerability, or seasonality?
 
-**Explanation:** A high-performance model is only partially useful if it acts like a black box; interpretability is crucial for policymakers. By analyzing the feature importance outputs of our machine learning models, this question aims to identify the underlying drivers of food crises. We want to explore whether a country's underlying vulnerability (FAO score) outweighs market momentum (price lags/fluctuations) or whether specific product types are universal triggers regardless of country. Understanding which variables carry the greatest weight will allow organizations to allocate monitoring resources more effectively.
+**Explanation:** A high-performance model is only partially useful if it acts like a black box; interpretability is crucial for policymakers. By analyzing the feature importance outputs of our machine learning models, this question aims to identify the underlying drivers of food crises. We want to explore whether a country's underlying vulnerability (FAO score) outweighs market momentum (price lags/fluctuations). Understanding which variables carry the greatest weight will allow organizations to allocate monitoring resources more effectively.
 
 ---
 
