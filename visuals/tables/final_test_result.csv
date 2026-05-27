@@ -1,0 +1,2 @@
+model,optimal_threshold,val_auc_roc,val_pr_auc,val_f1,test_auc_roc,test_pr_auc,test_f1
+XGBoost (tuned),0.5618,0.7194,0.3169,0.376,0.7647,0.3186,0.3888
