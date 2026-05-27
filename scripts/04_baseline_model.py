@@ -13,9 +13,11 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import os
 
-DATA_PATH = "data/processed/processed_food_crisis_data.csv"
-OUT_FIG = "visuals/figures"
-OUT_TBL = "visuals/tables"
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)
+DATA_PATH = os.path.join(PROJECT_ROOT, "data", "processed", "processed_food_crisis_data.csv")
+OUT_FIG = os.path.join(PROJECT_ROOT, "visuals", "figures")
+OUT_TBL = os.path.join(PROJECT_ROOT, "visuals", "tables")
 os.makedirs(OUT_FIG, exist_ok=True)
 os.makedirs(OUT_TBL, exist_ok=True)
 
@@ -190,7 +192,7 @@ plt.tight_layout()
 fig.savefig(f"{OUT_FIG}/12_feature_importance_xgb_tuned.png", dpi=150)
 plt.close()
 
-# --- Combined feature importance: RF vs LightGBM vs Tuned XGBoost ---
+# --- Combined feature importance: LR, RF, XGBoost, LightGBM, Tuned XGBoost ---
 _plot_combined_fi(
     [
         (fi_lr,    "mediumpurple",   "Logistic Regression", "|Coefficient|"),
@@ -295,7 +297,7 @@ plt.tight_layout()
 fig.savefig(f"{OUT_FIG}/17_roc_curves.png", dpi=150)
 plt.close()
 
-# Save best parameters + val and test AUC (read by 06_shap_analysis.py)
+# Save best parameters + val and test AUC (read by 05_shap_analysis.py)
 best_params_df = pd.DataFrame([search.best_params_])
 best_params_df["val_auc_roc"]  = xgb_tuned_res["auc_roc"]
 best_params_df["test_auc_roc"] = test_res["auc_roc"]
@@ -413,5 +415,5 @@ plt.suptitle("Validation Length Comparison: Which Val Set Better Represents the 
 plt.tight_layout()
 fig.savefig(f"{OUT_FIG}/18_val_length_comparison.png", dpi=150, bbox_inches="tight")
 plt.close()
-print(f"\n16_val_length_comparison.png saved.")
+print(f"\n18_val_length_comparison.png saved.")
 print("\nDone. Validation length comparison complete.")

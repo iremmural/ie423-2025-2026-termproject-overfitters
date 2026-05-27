@@ -6,8 +6,8 @@ import seaborn as sns
 # PATH SETUP
 current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.dirname(current_dir)
-figures_path = os.path.join(project_root, "outputs", "figures")
-tables_path  = os.path.join(project_root, "outputs", "tables")
+figures_path = os.path.join(project_root, "visuals", "figures")
+tables_path  = os.path.join(project_root, "visuals", "tables")
 os.makedirs(figures_path, exist_ok=True)
 os.makedirs(tables_path, exist_ok=True)
 
@@ -64,7 +64,7 @@ sns.set_theme(style="whitegrid")
 scatter = plt.scatter(
     x=top_20['volatility_ratio_3'],
     y=top_20['fao_score'],
-    s=top_20['crisis_label'] * 15, # Balon boyutunu ayarla
+    s=top_20['crisis_label'] * 15, # scale bubble size by crisis count
     alpha=0.6,
     c=top_20['fao_score'],
     cmap='YlOrRd',
@@ -189,5 +189,44 @@ plt.xlabel('Year', fontsize=12)
 plt.ylabel('Country', fontsize=12)
 plt.tight_layout()
 plt.savefig(os.path.join(figures_path, "06_annual_crisis_intensity.png"), bbox_inches="tight")
+plt.close()
+
+# ---------------------------------------------------------
+# FIGURE 7: SEASONAL PATTERNS — MONTHLY CRISIS RATE & PRICE VOLATILITY
+# ---------------------------------------------------------
+MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+               'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+monthly_crisis = df.groupby('month')['crisis_label'].mean().reset_index()
+monthly_crisis['month_name'] = monthly_crisis['month'].apply(lambda x: MONTH_NAMES[int(x) - 1])
+
+monthly_vol = df.groupby('month')['volatility_ratio_3'].mean().reset_index()
+monthly_vol['month_name'] = monthly_vol['month'].apply(lambda x: MONTH_NAMES[int(x) - 1])
+
+fig, axes = plt.subplots(1, 2, figsize=(16, 6))
+sns.set_theme(style="whitegrid")
+
+avg_crisis = monthly_crisis['crisis_label'].mean()
+bar_colors = ['#d73027' if v > avg_crisis else '#fee090' for v in monthly_crisis['crisis_label']]
+axes[0].bar(monthly_crisis['month_name'], monthly_crisis['crisis_label'],
+            color=bar_colors, edgecolor='grey', linewidth=0.7)
+axes[0].axhline(avg_crisis, color='dimgrey', linestyle='--', alpha=0.8, label=f'Annual avg: {avg_crisis:.3f}')
+axes[0].legend(fontsize=9)
+axes[0].set_title('Average Crisis Rate by Month', fontweight='bold', fontsize=13)
+axes[0].set_xlabel('Month', fontsize=11)
+axes[0].set_ylabel('Average Crisis Rate', fontsize=11)
+
+axes[1].plot(monthly_vol['month_name'], monthly_vol['volatility_ratio_3'],
+             marker='o', color='steelblue', linewidth=2, markersize=7)
+axes[1].axhline(monthly_vol['volatility_ratio_3'].mean(), color='dimgrey', linestyle='--',
+                alpha=0.8, label=f'Annual avg: {monthly_vol["volatility_ratio_3"].mean():.3f}')
+axes[1].legend(fontsize=9)
+axes[1].set_title('Average Price Volatility by Month', fontweight='bold', fontsize=13)
+axes[1].set_xlabel('Month', fontsize=11)
+axes[1].set_ylabel('Avg Volatility Ratio (3-month)', fontsize=11)
+
+fig.suptitle('Seasonal Patterns in Food Price Crisis', fontsize=15, fontweight='bold')
+plt.tight_layout()
+plt.savefig(os.path.join(figures_path, "07_seasonal_patterns.png"), bbox_inches="tight")
 plt.close()
 
