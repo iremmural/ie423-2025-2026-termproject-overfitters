@@ -1,10 +1,13 @@
 # IE 423 2025-2026 Term Project Proposal - Global Food Crisis Early Warning System
+Website: https://iremmural.github.io/ie423-2025-2026-termproject-overfitters/
 
 ## Team Members
 - Begüm Acar (122203037)
 - İrem Ural (121203037)
 - Gamze Kılıç (122203118)
 - Sercan Çavuş (122203045)
+
+
 
 ## Project Objective
 
@@ -22,6 +25,7 @@ The objective of this project is to develop a Machine Learning–based early war
 ```text
 ├── README.md                  → project overview and setup instructions
 ├── requirements.txt           → python dependencies list
+├── index.html                 → the website — all content, figures, tables, results
 ├── data/
 │   ├── raw/                   → original datasets
 │   ├── processed/             → final ML-ready dataset
@@ -29,7 +33,9 @@ The objective of this project is to develop a Machine Learning–based early war
 ├── scripts/
 │   ├── 01_load_data.py        → verifies file paths and imports data
 │   ├── 02_preprocess_data.py  → handles missing values, merges, and creates features
-│   └── 03_basic_eda.py        → creates visualizations and statistical summaries
+│   ├── 03_basic_eda.py        → creates visualizations and statistical summaries
+│   ├── 04_baseline_model.py   →
+│   └── 05_shap_analysis.py    →
 ├── outputs/
 │   ├── figures/               → generated charts and graphs
 │   └── tables/                → generated tables
