@@ -78,17 +78,17 @@ lr = LogisticRegression(class_weight="balanced", max_iter=1000, solver="saga", r
 lr.fit(X_train, y_train)
 lr_res = evaluate("Logistic Regression", y_val, lr.predict(X_val), lr.predict_proba(X_val)[:, 1])
 
-rf = RandomForestClassifier(n_estimators=200, class_weight="balanced", random_state=42, n_jobs=-1)
+rf = RandomForestClassifier(n_estimators=200, class_weight="balanced", random_state=42, n_jobs=1)
 rf.fit(X_train, y_train)
 rf_res = evaluate("Random Forest", y_val, rf.predict(X_val), rf.predict_proba(X_val)[:, 1])
 
 xgb = XGBClassifier(n_estimators=300, max_depth=5, learning_rate=0.05,
-                    scale_pos_weight=scale, random_state=42, n_jobs=-1, eval_metric="auc")
+                    scale_pos_weight=scale, random_state=42, n_jobs=1, eval_metric="auc")
 xgb.fit(X_train, y_train)
 xgb_res = evaluate("XGBoost", y_val, xgb.predict(X_val), xgb.predict_proba(X_val)[:, 1])
 
 lgbm = LGBMClassifier(n_estimators=300, learning_rate=0.05, class_weight="balanced",
-                      random_state=42, n_jobs=-1, verbose=-1)
+                      random_state=42, n_jobs=1, verbose=-1)
 lgbm.fit(X_train, y_train)
 lgbm_res = evaluate("LightGBM", y_val, lgbm.predict(X_val), lgbm.predict_proba(X_val)[:, 1])
 
@@ -159,7 +159,7 @@ param_dist = {
 }
 
 tscv = TimeSeriesSplit(n_splits=5)
-xgb_base = XGBClassifier(scale_pos_weight=scale, random_state=42, n_jobs=-1, eval_metric="auc")
+xgb_base = XGBClassifier(scale_pos_weight=scale, random_state=42, n_jobs=1, eval_metric="auc")
 
 search = RandomizedSearchCV(
     xgb_base,
@@ -169,7 +169,7 @@ search = RandomizedSearchCV(
     cv=tscv,
     random_state=42,
     verbose=2,
-    n_jobs=-1
+    n_jobs=1
 )
 
 print("\nStarting XGBoost hyperparameter tuning...")
@@ -351,7 +351,7 @@ for label, cfg in configs.items():
     params["min_child_weight"] = int(params["min_child_weight"])
 
     m = XGBClassifier(**params, scale_pos_weight=sc, random_state=42,
-                      n_jobs=-1, eval_metric="auc")
+                      n_jobs=1, eval_metric="auc")
     m.fit(Xtr, ytr)
 
     val_auc  = roc_auc_score(yvl, m.predict_proba(Xvl)[:, 1])

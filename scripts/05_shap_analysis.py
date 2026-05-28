@@ -81,4 +81,4 @@ plt.savefig(f"{OUT_FIG}/21_shap_dependence.png", dpi=150, bbox_inches="tight")
 plt.close()
 print(f"21_shap_dependence.png saved. (Top feature: {top_feature})")
 
-
+print("\nDone. All SHAP figures saved to visuals/figures.")

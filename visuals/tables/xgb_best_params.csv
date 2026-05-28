@@ -1,2 +1,2 @@
 subsample,n_estimators,min_child_weight,max_depth,learning_rate,gamma,colsample_bytree,val_auc_roc,test_auc_roc
-0.7,200,1,3,0.01,0.3,0.7,0.7197732836847539,0.7643534282132467
+0.7,200,1,3,0.01,0.3,0.7,0.7193882862035915,0.7646712750889656
