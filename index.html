@@ -697,6 +697,14 @@
         <h3>Why Not Accuracy?</h3>
         <p>About 80% of records are non-crisis. A model that always predicts "no crisis" would score 80% accuracy — but it would never detect a real crisis. So we use AUC-ROC, PR-AUC, and F1 instead. These metrics focus on how well the model finds the rare crisis events, which is what actually matters.</p>
 
+        <h3>Model Selection Justification</h3>
+        <p>We test five models, each chosen for a specific reason:</p>
+        <p><strong>Logistic Regression:</strong> A simple linear model used as our baseline. It shows whether the problem can be solved with just linear relationships. If more complex models cannot beat it, the extra complexity is not worth it.</p>
+        <p><strong>Random Forest:</strong> An ensemble of decision trees that captures non-linear patterns between price lags and FAO scores. It is robust to overfitting and provides feature importance scores as an early indicator of which variables drive crisis predictions.</p>
+        <p><strong>XGBoost (default):</strong> A gradient boosting model known for strong performance on imbalanced tabular data. Each round focuses on the samples the model got wrong, making it well-suited for detecting rare crisis events. Run at default settings to separate the algorithm's contribution from tuning.</p>
+        <p><strong>LightGBM:</strong> Another gradient boosting model that grows trees differently from XGBoost. Included to check whether a different boosting strategy changes the results, and to make sure XGBoost's lead is not due to how it builds trees.</p>
+        <p><strong>XGBoost (tuned):</strong> Our final model. We searched 40 different combinations of key hyperparameters using TimeSeriesSplit so that future data never leaks into training. The best model was picked by F1 score and tested once on the 2023–2024 test set. The winning parameter values are: <code>max_depth = 3</code>, <code>learning_rate = 0.01</code>, <code>n_estimators = 200</code>, <code>subsample = 0.7</code>, <code>colsample_bytree = 0.7</code>, <code>min_child_weight = 1</code>, <code>gamma = 0.3</code>.</p>
+
         <h3>Model Comparison — Validation Set</h3>
         <div class="fig">
           <img src="visuals/figures/14_model_comparison_bar.png" alt="Model Comparison" />
@@ -706,14 +714,6 @@
             AUC-ROC and PR-AUC scores for all five models on the 2021–2022 validation set. XGBoost (tuned) scores the highest on both metrics. The difference between the tuned and default XGBoost shows that searching for the best hyperparameters clearly pays off [Chen &amp; Guestrin, 2016].
           </p>
         </div>
-
-        <h3>Model Selection Justification</h3>
-        <p>We test five models, each chosen for a specific reason:</p>
-        <p><strong>Logistic Regression:</strong> A simple linear model used as our baseline. It shows whether the problem can be solved with just linear relationships. If more complex models cannot beat it, the extra complexity is not worth it.</p>
-        <p><strong>Random Forest:</strong> An ensemble of decision trees that captures non-linear patterns between price lags and FAO scores. It is robust to overfitting and provides feature importance scores as an early indicator of which variables drive crisis predictions.</p>
-        <p><strong>XGBoost (default):</strong> A gradient boosting model known for strong performance on imbalanced tabular data. Each round focuses on the samples the model got wrong, making it well-suited for detecting rare crisis events. Run at default settings to separate the algorithm's contribution from tuning.</p>
-        <p><strong>LightGBM:</strong> Another gradient boosting model that grows trees differently from XGBoost. Included to check whether a different boosting strategy changes the results, and to make sure XGBoost's lead is not due to how it builds trees.</p>
-        <p><strong>XGBoost (tuned):</strong> Our final model. We searched 40 different combinations of key hyperparameters using TimeSeriesSplit so that future data never leaks into training. The best model was picked by F1 score and tested once on the 2023–2024 test set. The winning parameter values are: <code>max_depth = 3</code>, <code>learning_rate = 0.01</code>, <code>n_estimators = 200</code>, <code>subsample = 0.7</code>, <code>colsample_bytree = 0.7</code>, <code>min_child_weight = 1</code>, <code>gamma = 0.3</code>.</p>
 
         <p style="font-size:0.78rem; font-weight:800; letter-spacing:0.14em; text-transform:uppercase; color:var(--forest); margin:1.4rem 0 0.4rem;">Model Comparison</p>
         <div class="tbl-wrap">
