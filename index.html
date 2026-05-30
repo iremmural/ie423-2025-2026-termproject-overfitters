@@ -1,1013 +1,419 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Global Food Crisis Early Warning System</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Plus+Jakarta+Sans:wght@700;800;900&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --cream:     #f8f3ea;
-      --parchment: #fbf6ee;
-      --forest:    #203b2a;
-      --forest-mid:#2f5a3c;
-      --harvest:   #d97706;
-      --wheat:     #d9b66f;
-      --crisis:    #b42318;
-      --warn:      #c05621;
-      --soil:      #7b5234;
-      --text:      #251f18;
-      --muted:     #74685e;
-      --border:    #e2d4c0;
-      --white:     #ffffff;
-      --shadow:    0 2px 20px rgba(0,0,0,0.06);
-      --shadow-md: 0 8px 32px rgba(0,0,0,0.12);
-      --shadow-lg: 0 16px 56px rgba(0,0,0,0.14);
-      --max:       1080px;
-      --glass:     rgba(255,255,255,0.72);
-      --glass-border: rgba(255,255,255,0.55);
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: Inter, Aptos, 'Segoe UI', Arial, sans-serif;
-      background:
-        radial-gradient(circle at 8% 4%, rgba(217,182,111,.28), transparent 36rem),
-        radial-gradient(circle at 92% 2%, rgba(100,180,120,.20), transparent 32rem),
-        radial-gradient(circle at 50% 80%, rgba(200,134,10,.10), transparent 40rem),
-        linear-gradient(180deg, #faf5ec 0%, var(--cream) 45%, #f2e8d8 100%);
-      color: var(--text);
-      line-height: 1.72;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    body::before {
-      content: '';
-      position: fixed; inset: 0; pointer-events: none; z-index: -1;
-      background-image:
-        linear-gradient(rgba(32,59,42,.030) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(32,59,42,.030) 1px, transparent 1px);
-      background-size: 42px 42px;
-      mask-image: linear-gradient(to bottom, rgba(0,0,0,.45), rgba(0,0,0,.06));
-    }
-
-    /* ── NAV ── */
-    nav {
-      position: sticky; top: 0; z-index: 100;
-      background: rgba(20,46,30,0.82);
-      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      display: flex; align-items: center; justify-content: space-between;
-      height: 58px; padding: 0 2.5rem;
-      box-shadow: 0 1px 0 rgba(255,255,255,0.06), 0 4px 24px rgba(0,0,0,0.22);
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-    }
-    .nav-brand {
-      font-family: 'Plus Jakarta Sans', Inter, sans-serif;
-      font-size: .92rem; font-weight: 800; color: var(--wheat);
-      letter-spacing: 0.01em; white-space: nowrap; flex-shrink: 0;
-    }
-    .nav-links { display: flex; align-items: center; gap: 0; }
-    nav a {
-      color: rgba(255,255,255,0.65); text-decoration: none;
-      font-size: 0.75rem; font-weight: 600; padding: 0 0.85rem; height: 58px;
-      display: flex; align-items: center; border-bottom: 2px solid transparent;
-      transition: color 0.2s, border-color 0.2s; letter-spacing: 0.06em; text-transform: uppercase;
-    }
-    nav a:hover { color: #fff; border-bottom-color: var(--harvest); }
-
-    /* ── HERO ── */
-    .hero {
-      background:
-        linear-gradient(135deg, rgba(12,28,8,0.82) 0%, rgba(21,82,50,0.65) 60%, rgba(45,80,22,0.80) 100%),
-        url('https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=1400&q=80') center/cover no-repeat;
-      min-height: 90vh;
-      display: flex; flex-direction: column;
-      justify-content: center; align-items: flex-start;
-      padding: 7rem 5rem 5rem;
-    }
-    .hero-tag {
-      display: inline-flex; align-items: center; gap: 0.4rem;
-      background: var(--crisis); color: #fff;
-      font-size: 0.70rem; font-weight: 700; letter-spacing: 0.16em;
-      text-transform: uppercase; padding: 0.35rem 1rem;
-      border-radius: 999px; margin-bottom: 1.5rem;
-    }
-    .hero h1 {
-      font-family: 'Plus Jakarta Sans', Inter, sans-serif;
-      font-size: clamp(2.4rem, 6vw, 4.6rem); font-weight: 900;
-      color: #fff; line-height: 1.06; max-width: 740px;
-      margin-bottom: 1.2rem;
-      text-shadow: 0 4px 24px rgba(0,0,0,0.45); letter-spacing: -0.04em;
-    }
-    .hero h1 em { color: var(--wheat); font-style: normal; }
-    .hero-sub {
-      font-size: 1.1rem; color: rgba(255,255,255,0.85);
-      max-width: 560px; margin-bottom: 2rem; font-weight: 400;
-    }
-    .hero-sub strong { color: #fff; font-weight: 700; }
-    .hero-badges { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2.5rem; }
-    .hero-badge {
-      background: rgba(255,255,255,0.11);
-      border: 1px solid rgba(255,255,255,0.28);
-      color: rgba(255,255,255,0.92); border-radius: 999px;
-      padding: 0.28rem 0.9rem; font-size: 0.82rem; font-weight: 500;
-    }
-    .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
-    .btn {
-      padding: 0.75rem 1.9rem; border-radius: 999px; font-weight: 700;
-      font-size: 0.86rem; text-decoration: none; letter-spacing: 0.03em;
-      transition: all 0.25s cubic-bezier(.2,.8,.3,1); display: inline-flex; align-items: center;
-    }
-    .btn-harvest { background: linear-gradient(135deg, #e07c06, var(--harvest)); color: #fff; box-shadow: 0 6px 24px rgba(200,134,10,0.35); }
-    .btn-harvest:hover { background: linear-gradient(135deg, #f08c10, #e08010); transform: translateY(-2px); box-shadow: 0 10px 32px rgba(200,134,10,0.45); }
-    .btn-outline { background: rgba(255,255,255,0.08); color: #fff; border: 1.5px solid rgba(255,255,255,0.38); backdrop-filter: blur(8px); }
-    .btn-outline:hover { border-color: var(--wheat); color: var(--wheat); transform: translateY(-2px); background: rgba(255,255,255,0.12); }
-
-    /* ── STAT STRIP ── */
-    .stat-strip {
-      background: var(--forest);
-      display: flex; flex-wrap: wrap;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-    }
-    .stat-item {
-      flex: 1; min-width: 140px; padding: 1.4rem 1.5rem;
-      border-right: 1px solid rgba(255,255,255,0.10);
-      text-align: center;
-    }
-    .stat-item:last-child { border-right: none; }
-    .stat-n {
-      font-size: 2.1rem; font-weight: 800; color: var(--wheat);
-      display: block; line-height: 1; letter-spacing: -0.03em;
-    }
-    .stat-l { font-size: 0.72rem; color: rgba(255,255,255,0.52); letter-spacing: 0.09em; text-transform: uppercase; margin-top: 0.3rem; display: block; }
-
-    /* ── LAYOUT ── */
-    section { padding: 5rem 0; }
-    .section-inner { max-width: var(--max); margin: 0 auto; padding: 0 2rem; }
-
-    /* ── TYPOGRAPHY ── */
-    .eyebrow {
-      font-size: 0.70rem; font-weight: 700; letter-spacing: 0.18em;
-      text-transform: uppercase; color: var(--harvest);
-      display: block; margin-bottom: 0.5rem;
-    }
-    h2 {
-      font-family: 'Plus Jakarta Sans', Inter, sans-serif;
-      font-size: clamp(1.7rem, 3.5vw, 2.5rem); font-weight: 800;
-      background: linear-gradient(135deg, var(--forest) 0%, #3a7a50 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      background-clip: text;
-      line-height: 1.07; margin-bottom: 1rem; letter-spacing: -0.045em;
-    }
-    h3 {
-      font-size: 0.78rem; font-weight: 800; color: var(--soil);
-      margin: 2.2rem 0 0.6rem; text-transform: uppercase;
-      letter-spacing: 0.13em; display: flex; align-items: center; gap: 0.55rem;
-    }
-    h3::before {
-      content: ''; width: 6px; height: 6px; border-radius: 50%;
-      background: linear-gradient(135deg, var(--harvest), #f59e0b);
-      flex-shrink: 0; box-shadow: 0 0 6px rgba(217,119,6,0.5);
-    }
-    p { margin-bottom: 0.9rem; color: var(--text); }
-    a { color: var(--harvest); text-decoration-thickness: 1px; }
-
-    /* ── PULL QUOTE ── */
-    .pull {
-      border-left: 4px solid var(--harvest);
-      padding: 1rem 1.4rem; margin: 1.8rem 0;
-      background: linear-gradient(90deg, rgba(200,134,10,0.07), transparent);
-      border-radius: 0 8px 8px 0;
-    }
-    .pull p {
-      font-size: 1.08rem; color: var(--forest); font-weight: 600;
-      font-style: normal; margin: 0;
-    }
-
-    /* ── DIVIDER ── */
-    .divider {
-      height: 1px; max-width: var(--max); margin: 0 auto;
-      background: linear-gradient(90deg, transparent, var(--border), transparent);
-    }
-
-    /* ── CARDS ── */
-    .card {
-      background: var(--glass);
-      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-      border: 1px solid var(--glass-border);
-      border-radius: 14px; padding: 1.5rem 1.8rem;
-      box-shadow: var(--shadow);
-      transition: box-shadow 0.25s cubic-bezier(.2,.8,.3,1), transform 0.25s cubic-bezier(.2,.8,.3,1);
-    }
-    .card:hover { box-shadow: var(--shadow-lg); transform: translateY(-4px); }
-    .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 1.2rem; margin: 1.5rem 0; }
-    .card h3 { margin-top: 0; }
-    .card-accent { border-top: 3px solid var(--harvest); background: linear-gradient(160deg, rgba(217,119,6,0.04) 0%, var(--glass) 60%); }
-    .card-crisis { border-top: 3px solid var(--crisis); background: linear-gradient(160deg, rgba(180,35,24,0.04) 0%, var(--glass) 60%); }
-    .card-forest { border-top: 3px solid var(--forest); background: linear-gradient(160deg, rgba(32,59,42,0.04) 0%, var(--glass) 60%); }
-
-    /* ── LITERATURE CARD ── */
-    .lit-card {
-      background: var(--white); border: 1px solid var(--border);
-      border-left: 4px solid var(--forest); border-radius: 0 10px 10px 0;
-      padding: 1.2rem 1.6rem; margin: 1.5rem 0 2rem;
-      box-shadow: var(--shadow);
-    }
-    .lit-card .lit-title {
-      font-size: 0.70rem; font-weight: 700; letter-spacing: 0.14em;
-      text-transform: uppercase; color: var(--forest); margin-bottom: 0.5rem; display: block;
-    }
-    .lit-card p { font-size: 0.87rem; margin: 0; color: var(--text); }
-
-    /* ── FIGURES ── */
-    .fig {
-      margin: 1.8rem 0;
-      background: var(--glass);
-      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-      border: 1px solid var(--glass-border);
-      border-radius: 14px; padding: 0.9rem;
-      box-shadow: var(--shadow);
-      transition: box-shadow 0.25s cubic-bezier(.2,.8,.3,1), transform 0.25s cubic-bezier(.2,.8,.3,1);
-      overflow: hidden;
-    }
-    .fig:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
-    .fig img {
-      width: 100%; border-radius: 8px; display: block;
-      border: 1px solid rgba(0,0,0,0.04);
-      transition: transform 0.4s cubic-bezier(.2,.8,.3,1);
-    }
-    .fig:hover img { transform: scale(1.015); }
-    .fig-cap {
-      margin-top: 0.8rem; padding: 0 0.3rem;
-      font-size: 0.83rem; color: var(--muted); line-height: 1.58;
-    }
-    .fig-num {
-      font-size: 0.67rem; font-weight: 700; text-transform: uppercase;
-      letter-spacing: 0.12em; color: var(--harvest); margin-right: 0.25rem;
-    }
-    .fig-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin: 1.8rem 0; }
-    .fig-row .fig { margin: 0; }
-    .fig-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin: 1.8rem 0; }
-    .fig-3 .fig { margin: 0; }
-    .fig-narrow { max-width: 520px; margin: 1.8rem auto; }
-
-    /* ── RQ BLOCK ── */
-    .rq-wrap {
-      background: var(--glass);
-      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-      border: 1px solid var(--glass-border);
-      border-radius: 18px; overflow: hidden; margin-bottom: 4rem;
-      box-shadow: var(--shadow-md);
-    }
-    .rq-header {
-      background: linear-gradient(135deg, #162b1e 0%, var(--forest) 40%, #3a7a50 100%);
-      padding: 1.8rem 2.2rem; display: flex; align-items: center; gap: 1.5rem;
-      position: relative; overflow: hidden;
-    }
-    .rq-header::after {
-      content: ''; position: absolute; inset: 0;
-      background: radial-gradient(circle at 80% 50%, rgba(217,182,111,0.12), transparent 60%);
-      pointer-events: none;
-    }
-    .rq-num {
-      font-family: 'Plus Jakarta Sans', Inter, sans-serif;
-      font-size: 3.6rem; color: rgba(255,255,255,0.12); line-height: 1; font-weight: 900;
-      letter-spacing: -0.05em;
-    }
-    .rq-header-text h2 {
-      font-family: 'Plus Jakarta Sans', Inter, sans-serif;
-      color: #fff; margin: 0; font-size: 1.22rem; letter-spacing: -0.025em;
-      -webkit-text-fill-color: #fff; background: none;
-    }
-    .rq-header-text p { color: rgba(255,255,255,0.60); margin: 0; font-size: 0.87rem; }
-    .rq-body { padding: 2.2rem 2.4rem; }
-
-    /* ── SPLIT BOX ── */
-    .split-box {
-      background: #0f2a1a; border-radius: 10px;
-      padding: 1.2rem 1.8rem; font-family: 'Courier New', monospace;
-      font-size: 0.87rem; margin: 1.2rem 0; line-height: 2;
-      border: 1px solid rgba(255,255,255,0.08);
-    }
-    .t-train { color: #7ec8e3; }
-    .t-val   { color: #f0c060; }
-    .t-test  { color: #e07060; }
-
-    /* ── TABLE ── */
-    .tbl-wrap { overflow-x: auto; margin: 1.2rem 0; border-radius: 14px; border: 1px solid var(--glass-border); box-shadow: var(--shadow-md); background: var(--glass); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
-    table { width: 100%; border-collapse: collapse; font-size: 0.87rem; }
-    thead th {
-      background: linear-gradient(135deg, #162b1e, var(--forest));
-      color: var(--wheat);
-      padding: 0.8rem 1.1rem; text-align: left; font-weight: 700;
-      letter-spacing: 0.04em; font-size: 0.80rem; text-transform: uppercase;
-    }
-    thead th:first-child { border-radius: 13px 0 0 0; }
-    thead th:last-child  { border-radius: 0 13px 0 0; }
-    td { padding: 0.7rem 1.1rem; border-bottom: 1px solid rgba(226,212,192,0.5); }
-    tbody tr { transition: background 0.15s; }
-    tbody tr:hover td { background: rgba(217,119,6,0.06); }
-    tr:nth-child(even) td { background: rgba(251,246,238,0.6); }
-    tbody tr:hover:nth-child(even) td { background: rgba(217,119,6,0.06); }
-    tr:last-child td { border-bottom: none; }
-
-    /* ── STEPS ── */
-    .steps { display: flex; flex-direction: column; gap: 0.6rem; }
-    .step {
-      display: flex; gap: 1.1rem; align-items: flex-start;
-      background: var(--white); border: 1px solid var(--border);
-      border-radius: 10px; padding: 0.9rem 1.2rem;
-      box-shadow: var(--shadow);
-    }
-    .step-n {
-      min-width: 1.9rem; height: 1.9rem; border-radius: 8px;
-      background: var(--forest); color: #fff;
-      font-weight: 700; font-size: 0.82rem;
-      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-    }
-    .step-t { font-size: 0.88rem; }
-    .step-t strong { color: var(--forest); }
-
-    /* ── CHIPS ── */
-    .chips { display: flex; flex-wrap: wrap; gap: 0.45rem; margin: 0.8rem 0; }
-    .chip {
-      background: var(--parchment); border: 1px solid var(--border);
-      border-radius: 999px; padding: 0.22rem 0.85rem;
-      font-size: 0.78rem; color: var(--forest); font-weight: 600;
-    }
-
-    /* ── LIMITS ── */
-    .limits { display: flex; flex-direction: column; gap: 0.6rem; margin: 1rem 0; }
-    .limit {
-      display: flex; gap: 0.8rem; align-items: flex-start;
-      background: #fff8f5; border: 1px solid #f0d0c0;
-      border-left: 4px solid var(--warn);
-      border-radius: 0 8px 8px 0; padding: 0.8rem 1rem; font-size: 0.9rem;
-    }
-
-    /* ── CODE ── */
-    pre {
-      background: #0f2a1a; color: #c8e6b0;
-      border-radius: 10px; padding: 1.4rem 1.6rem;
-      font-family: 'Courier New', monospace; font-size: 0.83rem;
-      overflow-x: auto; margin: 1rem 0; line-height: 1.8;
-      border: 1px solid rgba(255,255,255,0.07);
-    }
-    code {
-      background: var(--parchment); border-radius: 4px;
-      padding: 0.1rem 0.4rem; font-size: 0.84rem;
-      color: var(--forest); font-family: 'Courier New', monospace;
-    }
-
-    /* ── SECTION BACKGROUNDS ── */
-    .bg-parchment { background: var(--parchment); }
-    .bg-forest-light { background: #edf5ef; }
-
-    /* ── REFERENCES ── */
-    .ref-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.7rem; }
-    .ref-list li { font-size: 0.87rem; line-height: 1.65; }
-    .ref-list li strong { color: var(--forest); }
-
-    /* ── FOOTER ── */
-    footer {
-      background: var(--forest); padding: 2.5rem;
-      text-align: center; color: rgba(255,255,255,0.5); font-size: 0.83rem;
-    }
-    footer a { color: var(--wheat); text-decoration: none; font-weight: 600; }
-    footer a:hover { text-decoration: underline; }
-
-    /* ── SCROLL ANIMATIONS ── */
-    .fade-up {
-      opacity: 0; transform: translateY(28px);
-      transition: opacity 0.65s cubic-bezier(.2,.8,.3,1), transform 0.65s cubic-bezier(.2,.8,.3,1);
-    }
-    .fade-up.visible { opacity: 1; transform: translateY(0); }
-    .fade-up:nth-child(2) { transition-delay: 0.08s; }
-    .fade-up:nth-child(3) { transition-delay: 0.16s; }
-    .fade-up:nth-child(4) { transition-delay: 0.24s; }
-
-    /* ── STAT STRIP ── enhanced */
-    .stat-n {
-      background: linear-gradient(135deg, var(--wheat), #f0d080);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    /* ── STEPS ── enhanced */
-    .step {
-      background: var(--glass);
-      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-      border: 1px solid var(--glass-border);
-      border-radius: 12px;
-      transition: box-shadow 0.2s, transform 0.2s;
-    }
-    .step:hover { box-shadow: var(--shadow-md); transform: translateX(4px); }
-    .step-n {
-      background: linear-gradient(135deg, var(--forest), #3a7a50);
-      border-radius: 10px;
-    }
-
-    /* ── EYEBROW ── */
-    .eyebrow {
-      background: linear-gradient(135deg, var(--harvest), #f59e0b);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    /* ── PULL QUOTE ── */
-    .pull {
-      border-left: 4px solid transparent;
-      border-image: linear-gradient(180deg, var(--harvest), #f59e0b) 1;
-      background: linear-gradient(90deg, rgba(200,134,10,0.08), transparent 80%);
-      border-radius: 0 10px 10px 0;
-    }
-
-    /* ── CHIPS ── */
-    .chip {
-      background: rgba(32,59,42,0.07);
-      border: 1px solid rgba(32,59,42,0.15);
-      backdrop-filter: blur(4px);
-    }
-
-    @media (max-width: 768px) {
-      .hero { padding: 6rem 2rem 4rem; }
-      .hero h1 { font-size: 2.2rem; }
-      .nav-links { display: none; }
-      .fig-row, .fig-3 { grid-template-columns: 1fr; }
-      .rq-body { padding: 1.5rem; }
-    }
-  </style>
-</head>
-<body>
-
-<!-- NAV -->
-<nav>
-  <span class="nav-brand">Global Food Crisis Early Warning System</span>
-  <div class="nav-links">
-    <a href="#problem">Problem</a>
-    <a href="#data">Data</a>
-    <a href="#rq1">RQ 1</a>
-    <a href="#rq2">RQ 2</a>
-    <a href="#rq3">RQ 3</a>
-    <a href="#conclusion">Conclusion</a>
-    <a href="#reproduce">Reproduce</a>
-    <a href="#references">References</a>
-  </div>
-</nav>
-
-<!-- HERO -->
-<div class="hero">
-  <span class="hero-tag">⚠ Food Crisis Early Warning &nbsp;·&nbsp; IE 423 Term Project 2025–2026</span>
-  <h1>Can we predict<br>a <em>food crisis</em><br>before it strikes?</h1>
-  <p class="hero-sub">
-    We built a machine learning system that reads food price signals
-    <strong>3 months in advance</strong> — giving humanitarian organizations time
-    to act before millions go hungry.
-  </p>
-  <div class="hero-badges">
-    <span class="hero-badge">Begüm Acar</span>
-    <span class="hero-badge">İrem Ural</span>
-    <span class="hero-badge">Gamze Kılıç</span>
-    <span class="hero-badge">Sercan Çavuş</span>
-  </div>
-  <div class="hero-btns">
-    <a href="#rq2" class="btn btn-harvest">See the Model →</a>
-    <a href="https://github.com/BILGI-IE-423/ie423-2025-2026-termproject-overfitters" target="_blank" class="btn btn-outline">GitHub Repository</a>
-  </div>
-</div>
-
-<!-- STAT STRIP -->
-<div class="stat-strip">
-  <div class="stat-item"><span class="stat-n">2M+</span><span class="stat-l">Raw Price Records</span></div>
-  <div class="stat-item"><span class="stat-n">60</span><span class="stat-l">Countries</span></div>
-  <div class="stat-item"><span class="stat-n">9 yrs</span><span class="stat-l">2016 – 2024</span></div>
-  <div class="stat-item"><span class="stat-n">5</span><span class="stat-l">ML Models</span></div>
-  <div class="stat-item"><span class="stat-n">3 mo</span><span class="stat-l">Forecast Horizon</span></div>
-</div>
-
-<!-- PROBLEM -->
-<section id="problem">
-  <div class="section-inner">
-    <span class="eyebrow" style="font-size: 1.2rem; letter-spacing: 0.16em;">The Problem</span>
-
-
-    <div class="pull">
-      <p>A 20% rise in food prices within 3 months is a serious market shock. Our model is built to detect this before it affects people's daily lives.</p>
-    </div>
-
-    <p>When food prices rise sharply, families can no longer buy enough food. But aid organizations usually respond <em>after</em> the crisis has already started. We asked: <strong>can we see it coming?</strong></p>
-    <p>We define a <strong>crisis event</strong> as a price increase of 20% or more within the next 3 months. This matches the WFP Alert Price Spikes (ALPS) method, which calls such rapid rises "Market Shocks." By combining 9 years of monthly price data with country-level food insecurity scores, we train machine learning models to warn us before the damage is done.</p>
-
-    <div class="card-grid" style="margin-top:2.5rem;">
-      <div class="card card-forest">
-        <h3>Research Question 1</h3>
-        <p>Which countries and food products experience the highest price volatility, and are these patterns seasonal?</p>
-        <p style="font-size:0.83rem;color:var(--muted);margin-top:0.6rem;">We use features like volatility ratios and month to separate normal seasonal price changes from unusual market shocks.</p>
-      </div>
-      <div class="card card-accent">
-        <h3>Research Question 2</h3>
-        <p>Using past price movements and a country's current food insecurity score, can a food price crisis in a country be predicted 3 months in advance?</p>
-        <p style="font-size:0.83rem;color:var(--muted);margin-top:0.6rem;">We combine price data with FAO vulnerability scores to train models that can warn us about a crisis before it happens.</p>
-      </div>
-      <div class="card card-crisis">
-        <h3>Research Question 3</h3>
-        <p>What are the most effective factors in determining crisis risk: country vulnerability, or seasonality?</p>
-        <p style="font-size:0.83rem;color:var(--muted);margin-top:0.6rem;">We look at feature importance and SHAP values to understand what drives the model's predictions — so policymakers can trust and use it.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- DATA -->
-<section id="data" class="bg-parchment">
-  <div class="section-inner">
-    <span class="eyebrow">The Data</span>
-    <h2>Two datasets. One combined signal.</h2>
-    <p>We use two datasets together. One tracks <strong>food prices</strong> at the market level, and the other measures <strong>food insecurity</strong> at the country level. Neither dataset alone is enough — combining them gives us a much stronger signal.</p>
-
-    <div class="card-grid" style="margin-top:1.5rem;">
-      <div class="card">
-        <h3>🌾 WFP Global Food Prices</h3>
-        <p style="font-size:0.82rem;color:var(--muted);margin-bottom:0.6rem;">2016–2024 · Monthly · ~2M records</p>
-        <p>Monthly food price data from the World Food Programme, covering many markets, countries, and food products.</p>
-        <a href="https://data.humdata.org/dataset/global-wfp-food-prices" target="_blank">Download dataset ↗</a>
-      </div>
-      <div class="card">
-        <h3>📊 FAO Food Insecurity Score</h3>
-        <p style="font-size:0.82rem;color:var(--muted);margin-bottom:0.6rem;">Annual · Country-level · 60 countries</p>
-        <p>Annual country-level data showing the percentage of people who face moderate or severe food insecurity, from the FAO via World Bank.</p>
-        <a href="https://data360.worldbank.org/en/indicator/FAO_FS_210091" target="_blank">Download dataset ↗</a>
-      </div>
-    </div>
-
-    <h3>Data Pipeline</h3>
-    <div class="steps">
-      <div class="step"><span class="step-n">1</span><div class="step-t"><strong>Load &amp; Verify</strong> — 9 WFP yearly CSV files and the FAO file are loaded and checked by <code>scripts/01_load_data.py</code>.</div></div>
-      <div class="step"><span class="step-n">2</span><div class="step-t"><strong>Clean WFP</strong> — Non-food items are removed. Rows with missing prices or dates are dropped and column names are made consistent.</div></div>
-      <div class="step"><span class="step-n">3</span><div class="step-t"><strong>Filter Countries</strong> — Countries with less than 4 years of data or gaps in coverage are removed, so time-series calculations stay reliable.</div></div>
-      <div class="step"><span class="step-n">4</span><div class="step-t"><strong>Monthly Aggregation</strong> — Data is grouped by country, product, and month. We calculate <code>avg_price</code>, <code>median_price</code>, <code>price_std</code>, and <code>obs_count</code> for each group.</div></div>
-      <div class="step"><span class="step-n">5</span><div class="step-t"><strong>Feature Engineering</strong> — We create lag prices (1, 3, 6 months back), rolling volatility ratios, and monthly percentage change for each country-product group.</div></div>
-      <div class="step"><span class="step-n">6</span><div class="step-t"><strong>Target Variable</strong> — <code>crisis_label = 1</code> if the average price goes up by 20% or more in the next 3 months; otherwise 0. The future price column is deleted after labelling to avoid data leakage.</div></div>
-      <div class="step"><span class="step-n">7</span><div class="step-t"><strong>FAO Merge &amp; Final Filter</strong> — FAO scores are joined by <code>countryiso3</code> and <code>year</code>. Countries with less than 4 FAO years are removed. Final dataset: <strong>67,564 rows · 60 countries</strong>.</div></div>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- RQ1 -->
-<section id="rq1">
-  <div class="section-inner">
-    <div class="rq-wrap">
-      <div class="rq-header">
-        <span class="rq-num">01</span>
-        <div class="rq-header-text">
-          <h2>Which countries and food products experience the highest price volatility, and are these patterns seasonal?</h2>
-          <p>Before building a prediction model, we need to understand how food prices behave in different regions. Some price changes are normal and seasonal. Others are signs of a deeper problem in the supply chain.</p>
-        </div>
-      </div>
-      <div class="rq-body">
-
-        <h3>Countries at Chronic Risk</h3>
-        <p>The FAO food insecurity score shows which countries are already struggling. In these countries, even a small price rise can have a big impact on families.</p>
-        <div class="fig">
-          <img src="visuals/figures/01_global_food_insecurity_rankings.png" alt="Global Food Insecurity Rankings" />
-          <p class="fig-cap">
-            <span class="fig-num">Fig. 1</span>
-            <strong>Countries ranked by food vulnerability.</strong>
-            Average FAO food insecurity score per country (2016–2024). Countries at the top have the least protection against price shocks. Afghanistan, Ethiopia, and Sierra Leone are consistently the most at-risk — these are the places where a 3-month early warning can make the biggest difference.
-          </p>
-        </div>
-
-        <h3>Which Products Trigger the Most Crises?</h3>
-        <p>Each bubble represents a food product. The size shows how many crisis events it caused. The axes show price volatility and country vulnerability. Products in the top-right corner are the most dangerous.</p>
-        <div class="fig">
-          <img src="visuals/figures/02_global_product_crisis_map.png" alt="Global Product Crisis Map" />
-          <p class="fig-cap">
-            <span class="fig-num">Fig. 2</span>
-            <strong>Staple grains are in the highest-risk zone.</strong>
-            Each bubble is one food product. The size shows total crisis events. Staple grains like maize, wheat, and rice appear in the upper-right corner — they have high price volatility and are sold in the most food-insecure countries. These are the products that any early warning system should monitor first.
-          </p>
-        </div>
-
-        <div class="fig-row">
-          <div class="fig">
-            <img src="visuals/figures/03_price_change_vs_crisis.png" alt="Price Change vs Crisis" />
-            <p class="fig-cap">
-              <span class="fig-num">Fig. 3</span>
-              <strong>Prices move faster before a crisis starts.</strong>
-              Monthly price changes during crisis (orange) vs. non-crisis (blue) periods. During a crisis, price changes are larger and more extreme. This means prices are already moving fast before a crisis is officially declared. Our lag features are designed to catch this early signal.
-            </p>
-          </div>
-          <div class="fig">
-            <img src="visuals/figures/04_correlation_heatmap.png" alt="Correlation Heatmap" />
-            <p class="fig-cap">
-              <span class="fig-num">Fig. 4</span>
-              <strong>The signal is there before any model is trained.</strong>
-              This heatmap shows how strongly each feature is linked to the crisis label. Price lag and volatility features have the highest correlation. This tells us that our features contain real information about future crises — even without a model.
-            </p>
-          </div>
-        </div>
-
-        <h3>Distribution of Crisis Events</h3>
-        <div class="fig fig-narrow">
-          <img src="visuals/figures/05_crisis_label_distribution.png" alt="Crisis Label Distribution" />
-          <p class="fig-cap">
-            <span class="fig-num">Fig. 5</span>
-            <strong>Accuracy is not a good metric here.</strong>
-            Only about 15–20% of records are crisis events. A model that always says "no crisis" would still be 80% accurate — but it would miss every real crisis. This is why we use AUC-ROC, PR-AUC, and F1 instead — these metrics specifically measure how well the model finds the rare but important crisis events.
-          </p>
-        </div>
-
-        <h3>Annual Crisis Intensity by Country</h3>
-        <div class="fig">
-          <img src="visuals/figures/06_annual_crisis_intensity.png" alt="Annual Crisis Intensity" />
-          <p class="fig-cap">
-            <span class="fig-num">Fig. 6</span>
-            <strong>Big global events show up clearly in price data.</strong>
-            This heatmap shows what share of a country's food products were in crisis each year, for the 25 highest-risk countries. The 2020 row (COVID-19) and 2022–2023 rows (Russia-Ukraine war, global grain price rise) are clearly visible across many countries at the same time. These real-world events leave clear patterns that machine learning can learn from.
-          </p>
-        </div>
-
-        <h3>Seasonal Patterns</h3>
-        <div class="fig">
-          <img src="visuals/figures/07_seasonal_patterns.png" alt="Seasonal Patterns" />
-          <p class="fig-cap">
-            <span class="fig-num">Fig. 7</span>
-            <strong>Seasonality matters, but it is not enough on its own.</strong>
-            Left: monthly crisis rate compared to the yearly average (red = above average). Right: price volatility by month. Harvest seasons and lean periods create regular patterns of risk. The effect is real but small — knowing the month alone is not enough to predict a crisis. We include month as a feature to capture this extra signal.
-          </p>
-        </div>
-
-        <div class="pull">
-          <p>Price momentum is a stronger signal than the month of the year — but ignoring seasonality means missing useful information.</p>
-        </div>
-
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- RQ2 -->
-<section id="rq2" class="bg-parchment">
-  <div class="section-inner">
-    <div class="rq-wrap">
-      <div class="rq-header">
-        <span class="rq-num">02</span>
-        <div class="rq-header-text">
-          <h2>Using past price movements and a country's current food insecurity score, can a food price crisis be predicted 3 months in advance?</h2>
-          <p>Past price movements show how a product's market is behaving. The FAO food insecurity score shows how vulnerable a country already is. By combining these two types of information, we train models that can give humanitarian organizations an early warning — before a crisis fully develops.</p>
-        </div>
-      </div>
-      <div class="rq-body">
-
-        <h3>Features Used</h3>
-        <div class="chips">
-          <span class="chip">avg_price</span><span class="chip">price_lag_1</span>
-          <span class="chip">price_lag_3</span><span class="chip">price_lag_6</span>
-          <span class="chip">pct_change_1m</span><span class="chip">volatility_ratio_3</span>
-          <span class="chip">volatility_ratio_6</span><span class="chip">fao_score</span>
-          <span class="chip">month</span>
-        </div>
-        <p>Target: <code>crisis_label</code> — 1 if price rises ≥ 20% in the next 3 months.</p>
-
-        <h3>No Random Splits — Strict Temporal Split</h3>
-        <p>If we shuffle time-series data randomly, future information can leak into training. This makes the model look better than it really is. To avoid this, we use a strict time-based split — the model only trains on past data and is never shown future information during training:</p>
-        <div class="split-box">
-          <span class="t-train">Train : 2016–2020  →  5 years (~55%)  — model learns from history</span><br>
-          <span class="t-val">  Val  : 2021–2022  →  2 years (~22%)  — model selection &amp; threshold tuning</span><br>
-          <span class="t-test"> Test  : 2023–2024  →  2 years (~22%)  — touched only once, final report</span>
-        </div>
-
-        <h3>Why a 2-Year Validation Window?</h3>
-        <div class="fig">
-          <img src="visuals/figures/18_val_length_comparison.png" alt="Validation Length Comparison" />
-          <p class="fig-cap">
-            <span class="fig-num">Fig. 8</span>
-            <strong>A 2-year window makes model selection more reliable.</strong>
-            This chart shows how close validation performance is to actual test performance. A smaller gap means the model behaves consistently on new data. The 2-year validation window is more stable than a 1-year window — so the choices we make on validation data are more likely to hold on the test set.
-          </p>
-        </div>
-
-        <h3>Why Not Accuracy?</h3>
-        <p>About 80% of records are non-crisis. A model that always predicts "no crisis" would score 80% accuracy — but it would never detect a real crisis. So we use AUC-ROC, PR-AUC, and F1 instead. These metrics focus on how well the model finds the rare crisis events, which is what actually matters.</p>
-
-        <h3>Model Selection Justification</h3>
-        <p>We test five models, each chosen for a specific reason:</p>
-        <p><strong>Logistic Regression:</strong> A simple linear model used as our baseline. It shows whether the problem can be solved with just linear relationships. If more complex models cannot beat it, the extra complexity is not worth it.</p>
-        <p><strong>Random Forest:</strong> An ensemble of decision trees that captures non-linear patterns between price lags and FAO scores. It is robust to overfitting and provides feature importance scores as an early indicator of which variables drive crisis predictions.</p>
-        <p><strong>XGBoost (default):</strong> A gradient boosting model known for strong performance on imbalanced tabular data. Each round focuses on the samples the model got wrong, making it well-suited for detecting rare crisis events. Run at default settings to separate the algorithm's contribution from tuning.</p>
-        <p><strong>LightGBM:</strong> Another gradient boosting model that grows trees differently from XGBoost. Included to check whether a different boosting strategy changes the results, and to make sure XGBoost's lead is not due to how it builds trees.</p>
-        <p><strong>XGBoost (tuned):</strong> Our final model. We searched 40 different combinations of key hyperparameters using TimeSeriesSplit so that future data never leaks into training. The best model was picked by F1 score and tested once on the 2023–2024 test set. The winning parameter values are: <code>max_depth = 3</code>, <code>learning_rate = 0.01</code>, <code>n_estimators = 200</code>, <code>subsample = 0.7</code>, <code>colsample_bytree = 0.7</code>, <code>min_child_weight = 1</code>, <code>gamma = 0.3</code>.</p>
-
-        <h3>Model Comparison — Validation Set</h3>
-        <div class="fig">
-          <img src="visuals/figures/14_model_comparison_bar.png" alt="Model Comparison" />
-          <p class="fig-cap">
-            <span class="fig-num">Fig. 9</span>
-            <strong>Tuning the model leads to better results.</strong>
-            AUC-ROC and PR-AUC scores for all five models on the 2021–2022 validation set. XGBoost (tuned) scores the highest on both metrics. The difference between the tuned and default XGBoost shows that searching for the best hyperparameters clearly pays off [Chen &amp; Guestrin, 2016].
-          </p>
-        </div>
-
-        <p style="font-size:0.78rem; font-weight:800; letter-spacing:0.14em; text-transform:uppercase; color:var(--forest); margin:1.4rem 0 0.4rem;">Model Comparison</p>
-        <div class="tbl-wrap">
-          <table>
-            <thead>
-              <tr><th>Model</th><th>AUC-ROC</th><th>PR-AUC</th><th>Precision</th><th>Recall</th><th>F1</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>Logistic Regression</td><td>0.5537</td><td>0.2226</td><td>0.1815</td><td>0.4784</td><td>0.2632</td></tr>
-              <tr><td>Random Forest</td><td>0.7007</td><td>0.3066</td><td><span style="color:#1a7f3c; font-weight:800;">0.5289</span></td><td>0.0510</td><td>0.0931</td></tr>
-              <tr><td>XGBoost</td><td>0.7051</td><td>0.3119</td><td>0.2992</td><td>0.4796</td><td>0.3685</td></tr>
-              <tr><td>LightGBM</td><td>0.7004</td><td>0.3046</td><td>0.2956</td><td>0.4529</td><td>0.3577</td></tr>
-              <tr style="font-weight:700; background:var(--harvest); color:#fff;"><td>XGBoost (tuned) ★</td><td><span style="color:#1a7f3c; font-weight:800;">0.7194</span></td><td><span style="color:#1a7f3c; font-weight:800;">0.3169</span></td><td>0.2598</td><td><span style="color:#1a7f3c; font-weight:800;">0.6803</span></td><td><span style="color:#1a7f3c; font-weight:800;">0.3760</span></td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="fig">
-          <img src="visuals/figures/15_roc_curves_val.png" alt="ROC Curves Validation" />
-          <p class="fig-cap">
-            <span class="fig-num">Fig. 10</span>
-            <strong>XGBoost (tuned) leads at every threshold level.</strong>
-            ROC curves for all five models on the validation set. XGBoost (tuned) has the largest area under the curve at every point. This is important because the alarm threshold is a decision that depends on the context — a good model should outperform others whether the threshold is set strictly or loosely.
-          </p>
-        </div>
-
-        <h3>Threshold Optimisation</h3>
-        <p>In a humanitarian setting, <strong>missing a crisis is much worse than raising a false alarm</strong>. If we miss a real crisis, people suffer. If we raise a false alarm, aid organizations can double-check. Because of this, we focus on Recall and use F1 to choose the best threshold on the validation set. We then apply this threshold once to the test set.</p>
-
-        <h3>Final Test Set Results</h3>
-        <div class="fig-row">
-          <div class="fig">
-            <img src="visuals/figures/16_confusion_matrix_xgb.png" alt="Confusion Matrix" />
-            <p class="fig-cap">
-              <span class="fig-num">Fig. 11</span>
-              <strong>How many crises did the model catch?</strong>
-              Confusion matrix on the 2023–2024 test set. True Positives = crises correctly detected 3 months in advance. False Negatives = missed crises — the most costly type of error in a humanitarian setting. We chose the threshold to minimize missed crises while keeping false alarms at a manageable level.
-            </p>
-          </div>
-          <div class="fig">
-            <img src="visuals/figures/17_roc_curves.png" alt="Final ROC Curve" />
-            <p class="fig-cap">
-              <span class="fig-num">Fig. 12</span>
-              <strong>Final performance on completely unseen data.</strong>
-              ROC curve of XGBoost (tuned), tested once on the 2023–2024 held-out set. The model had never seen this data during training or threshold selection. An AUC clearly above 0.5 confirms that the model can detect future crises — not just the ones it learned from.
-            </p>
-          </div>
-        </div>
-
-        <div class="lit-card">
-          <span class="lit-title">How This Fits the Literature</span>
-          <p>Using machine learning to predict food crises is a growing research area. The most similar study to ours is Andrée et al. (2020), who used WFP food prices and food insecurity scores with gradient boosted trees to predict crises 3 months ahead — they reported an AUC-ROC of 0.71–0.82. Our model (AUC 0.767) produces results in the same range, but across a broader set of 60 countries. Brych et al. (2025) built a similar early warning system using CatBoost, LSTM, and SHAP for Ukraine, Moldova, and Serbia — validating our choice of explainable ML and temporal validation. Other related studies include Busker et al. (2024), who used satellite and climate data; Martini et al. (2022), who used news data; Kino et al. (2022), who worked with FAO insecurity scores; and Driver et al. (2024), who combined live price data with climate signals. Our project is unique in building a price-first system that works across 60 countries.</p>
-        </div>
-
-        <div class="pull">
-          <p>Yes — food price crises can be predicted 3 months in advance. XGBoost (tuned) gives the best balance between precision and recall on both the validation and test sets.</p>
-        </div>
-
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- RQ3 -->
-<section id="rq3">
-  <div class="section-inner">
-    <div class="rq-wrap">
-      <div class="rq-header">
-        <span class="rq-num">03</span>
-        <div class="rq-header-text">
-          <h2>What are the most effective factors in determining crisis risk: product type, country vulnerability, or seasonality?</h2>
-          <p>A model that works well is only useful if we understand why it makes its decisions. By looking at feature importance and SHAP values, we find out what really drives food crises — so organizations can focus their resources on the right signals.</p>
-        </div>
-      </div>
-      <div class="rq-body">
-
-        <p>A prediction model is only useful if we understand <em>why</em> it gives a certain result. We look at feature importance from all five models and use SHAP values [Lundberg &amp; Lee, 2017] to see how each feature pushes the model toward or away from predicting a crisis — for every single observation.</p>
-
-        <h3>Feature Importance — All Five Models</h3>
-        <div class="fig-row">
-          <div class="fig">
-            <img src="visuals/figures/08_feature_importance_lr.png" alt="LR Feature Importance" />
-            <p class="fig-cap">
-              <span class="fig-num">Fig. 13</span>
-              <strong>Logistic Regression</strong> — feature importance based on coefficient size. Even in this simple linear model, price lag features are the most important. The crisis signal is strong enough to be picked up without complex patterns.
-            </p>
-          </div>
-          <div class="fig">
-            <img src="visuals/figures/09_feature_importance_rf.png" alt="RF Feature Importance" />
-            <p class="fig-cap">
-              <span class="fig-num">Fig. 14</span>
-              <strong>Random Forest</strong> — feature importance based on mean impurity decrease. This model captures non-linear patterns and handles outliers well. Price lag 1 is still the top feature, and volatility ratios are also important — consistent with the simpler model.
-            </p>
-          </div>
-        </div>
-        <div class="fig-row">
-          <div class="fig">
-            <img src="visuals/figures/10_feature_importance_xgb.png" alt="XGB Feature Importance" />
-            <p class="fig-cap">
-              <span class="fig-num">Fig. 15</span>
-              <strong>XGBoost (default)</strong> — works well on structured tabular data [Chen &amp; Guestrin, 2016]. This is the baseline before any hyperparameter tuning.
-            </p>
-          </div>
-          <div class="fig">
-            <img src="visuals/figures/11_feature_importance_lgbm.png" alt="LightGBM Feature Importance" />
-            <p class="fig-cap">
-              <span class="fig-num">Fig. 16</span>
-              <strong>LightGBM</strong> — a different type of gradient boosting. The feature ranking is similar to the other tree models, which confirms that the same signals are important across different algorithms.
-            </p>
-          </div>
-        </div>
-        <div class="fig">
-          <img src="visuals/figures/12_feature_importance_xgb_tuned.png" alt="Tuned XGB Feature Importance" />
-          <p class="fig-cap">
-            <span class="fig-num">Fig. 17</span>
-            <strong>XGBoost (tuned)</strong> — our final model. The feature rankings change slightly compared to the default version, but the main story stays the same.
-          </p>
-        </div>
-
-        <h3>Cross-Model Comparison</h3>
-        <div class="fig">
-          <img src="visuals/figures/13_feature_importance_comparison.png" alt="Feature Importance Comparison" />
-          <p class="fig-cap">
-            <span class="fig-num">Fig. 18</span>
-            <strong>The same features are important in every model.</strong>
-            Feature importance for all five models shown side by side. <code>price_lag_1</code> consistently ranks first or second in every model. The FAO food insecurity score also appears in the top features across all models. When a feature is important regardless of the algorithm, it is a truly reliable crisis indicator.
-          </p>
-        </div>
-
-        <h3>SHAP — Direction and Magnitude</h3>
-        <p>Feature importance scores only tell us which features matter. SHAP goes further — it shows <em>how</em> each feature pushes each individual prediction toward or away from a crisis, and by how much.</p>
-        <div class="fig">
-          <img src="visuals/figures/19_shap_beeswarm.png" alt="SHAP Beeswarm" />
-          <p class="fig-cap">
-            <span class="fig-num">Fig. 19</span>
-            <strong>How the model makes its decisions — one observation at a time.</strong>
-            SHAP beeswarm plot for XGBoost (tuned) on the test set [Lundberg &amp; Lee, 2017]. Each dot is one observation. Color shows the feature value (red = high, blue = low). The x-axis shows how much that feature pushed the prediction toward or away from a crisis. High recent prices (red dots on the right) strongly increase crisis probability. The model's logic matches what we would expect from domain knowledge — it is not a black box.
-          </p>
-        </div>
-        <div class="fig-row">
-          <div class="fig">
-            <img src="visuals/figures/20_shap_bar.png" alt="SHAP Bar" />
-            <p class="fig-cap">
-              <span class="fig-num">Fig. 20</span>
-              <strong>Average contribution of each feature across all predictions.</strong>
-              Mean absolute SHAP values show which features have the biggest impact on average. Unlike simpler importance measures, SHAP is based on game theory and treats positive and negative effects separately [Lundberg &amp; Lee, 2017]. Price momentum has the largest impact. FAO score and month also contribute, but at a lower level.
-            </p>
-          </div>
-          <div class="fig">
-            <img src="visuals/figures/21_shap_dependence.png" alt="SHAP Dependence" />
-            <p class="fig-cap">
-              <span class="fig-num">Fig. 21</span>
-              <strong>Country vulnerability makes price shocks more dangerous.</strong>
-              SHAP dependence plot for <code>price_lag_1</code>, colored by FAO food insecurity score. As recent prices go up, crisis probability increases. But countries with high FAO scores (red dots) sit above the others — the same price increase causes a bigger crisis risk in a country that is already food-insecure. Vulnerability does not just exist in the background — it makes every price shock more dangerous.
-            </p>
-          </div>
-        </div>
-
-        <div class="pull">
-          <p>Price momentum is the strongest factor. Country vulnerability (FAO score) makes it worse. Seasonality also plays a role — but it is less important than what is already happening in the market.</p>
-        </div>
-
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- CONCLUSION -->
-<section id="conclusion" class="bg-forest-light">
-  <div class="section-inner">
-    <span class="eyebrow">Conclusion</span>
-    <h2>What we found — and what remains uncertain.</h2>
-
-    <p>Food price crises leave clear signs in price data weeks before families feel the impact. By combining WFP price data with FAO vulnerability scores and using time-aware machine learning, we can raise an alarm <strong>3 months in advance</strong> with meaningful accuracy.</p>
-    <p>XGBoost (tuned) gave the best results on both the validation and test sets. SHAP analysis showed that the model's decisions match what we know about food crises — recent price changes and volatility are the main drivers, and country vulnerability makes them more dangerous. This makes the model suitable for real humanitarian monitoring.</p>
-
-    <h3>Limitations</h3>
-    <div class="limits">
-      <div class="limit">FAO scores are yearly and missing for some countries. This limits our dataset to 60 countries and reduces global coverage.</div>
-      <div class="limit">In countries with very high general inflation, the 20% threshold may be triggered by overall economic conditions rather than a real food supply problem.</div>
-      <div class="limit">Large global events like COVID-19 (2020–2021) and the Russia-Ukraine war (2022) changed market patterns in ways that could reduce the model's accuracy on future crises.</div>
-      <div class="limit">We use monthly country-level averages. This hides differences between local markets within a country, which could be important for targeted aid.</div>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- REPRODUCE -->
-<section id="reproduce">
-  <div class="section-inner">
-    <span class="eyebrow">Reproducibility</span>
-    <h2>Run it yourself.</h2>
-    <p>Every figure on this site is created by a script in <code>scripts/</code>. Nothing is edited manually — all outputs are fully reproducible.</p>
-
-    <pre>git clone https://github.com/BILGI-IE-423/ie423-2025-2026-termproject-overfitters
-cd ie423-2025-2026-termproject-overfitters
-pip install -r requirements.txt
-
-python scripts/01_load_data.py
-python scripts/02_preprocess_data.py
-python scripts/03_basic_eda.py
-python scripts/04_baseline_model.py
-python scripts/05_shap_analysis.py</pre>
-
-    <div class="tbl-wrap" style="margin-top:1.5rem;">
-      <table>
-        <thead><tr><th>Script</th><th>Produces</th><th>Output Path</th></tr></thead>
-        <tbody>
-          <tr><td><code>03_basic_eda.py</code></td><td>Figures 1–7 · descriptive stats table</td><td><code>visuals/figures/01–07_*</code></td></tr>
-          <tr><td><code>04_baseline_model.py</code></td><td>Figures 8–18 · model comparison tables</td><td><code>visuals/figures/08–18_*</code></td></tr>
-          <tr><td><code>05_shap_analysis.py</code></td><td>Figures 19–21 · SHAP plots</td><td><code>visuals/figures/19–21_*</code></td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- REFERENCES -->
-<section id="references" class="bg-parchment">
-  <div class="section-inner">
-    <span class="eyebrow">References</span>
-    <h2>Data Sources &amp; Literature</h2>
-    <p style="margin-bottom:1.6rem;">Citations appear in author-year format throughout this report. All figures are fully reproducible from the scripts and linked datasets.</p>
-
-    <div class="card-grid">
-      <div class="card">
-        <h3>Data Sources</h3>
-        <ul class="ref-list">
-          <li><strong>[WFP, 2016–2024]</strong> World Food Programme. <em>Global Food Prices Database.</em> <a href="https://data.humdata.org/dataset/global-wfp-food-prices" target="_blank">data.humdata.org ↗</a></li>
-          <li><strong>[FAO, 2016–2024]</strong> Food and Agriculture Organization. <em>Suite of Food Security Indicators.</em> <a href="https://data360.worldbank.org/en/indicator/FAO_FS_210091" target="_blank">World Bank Data360 ↗</a></li>
-        </ul>
-      </div>
-      <div class="card">
-        <h3>Methods</h3>
-        <ul class="ref-list">
-          <li><strong>[Chen &amp; Guestrin, 2016]</strong> XGBoost: A Scalable Tree Boosting System. <em>KDD 2016.</em></li>
-          <li><strong>[Lundberg &amp; Lee, 2017]</strong> A Unified Approach to Interpreting Model Predictions. <em>NeurIPS 2017.</em></li>
-        </ul>
-      </div>
-      <div class="card" style="grid-column: 1 / -1;">
-        <h3>Prior Work in Food Security ML</h3>
-        <ul class="ref-list">
-          <li><strong>[Andrée et al., 2020]</strong> Predicting Food Crises. <em>World Bank Policy Research Working Paper No. 9412.</em> — Closest methodological parallel to this project: WFP price data + food insecurity scores, gradient boosted trees, binary crisis classification, 3-month forecast horizon, AUC-ROC as primary metric. Reported AUC range: 0.71–0.82. Our model (AUC 0.767) falls directly within this benchmark range.</li>
-          <li><strong>[Brych et al., 2025]</strong> Machine Learning-Based Early Warning System for Food Security Threats in Transitional Bioeconomies. <em>13th IEEE International Conference on Intelligent Data Acquisition and Advanced Computing Systems (IDAACS 2025)</em>, Gliwice, Poland, pp. 1381. — Shares the same system framing and uses CatBoost + LSTM + SHAP within a temporal validation structure; directly validates our choice of explainable ML and SHAP for food security early warning.</li>
-          <li><strong>[Busker et al., 2024]</strong> Predicting Food-Security Crises in the Horn of Africa Using Machine Learning. <em>Earth's Future, 12.</em> <a href="https://doi.org/10.1029/2023EF004211" target="_blank">doi:10.1029/2023EF004211 ↗</a> — WFP price signals + ML classification, AUC-ROC evaluation; geographically narrower but methodologically equivalent.</li>
-          <li><strong>[Martini et al., 2022]</strong> Predicting food crises using news streams. <em>Science Advances, 8(9).</em> <a href="https://doi.org/10.1126/sciadv.abm3449" target="_blank">doi:10.1126/sciadv.abm3449 ↗</a> — Same binary crisis definition and temporal ML framework; input signal is news rather than prices.</li>
-          <li><strong>[Kino et al., 2022]</strong> Machine learning can guide food security efforts when primary data are not available. <em>Nature Food, 3,</em> 716–728. <a href="https://doi.org/10.1038/s43016-022-00587-8" target="_blank">doi:10.1038/s43016-022-00587-8 ↗</a> — FAO food insecurity data + ML; directly comparable to our FAO score component.</li>
-          <li><strong>[Driver et al., 2024]</strong> Forecasting trends in food security with real time data. <em>Communications Earth &amp; Environment, 5,</em> 478. <a href="https://doi.org/10.1038/s43247-024-01698-9" target="_blank">doi:10.1038/s43247-024-01698-9 ↗</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
-
-<footer>
-  <p>IE 423 Term Project 2025–2026 &nbsp;·&nbsp; Team Overfitters &nbsp;·&nbsp;
-  <a href="https://github.com/BILGI-IE-423/ie423-2025-2026-termproject-overfitters" target="_blank">GitHub Repository ↗</a></p>
-</footer>
-
-<script>
-  // Scroll fade-in
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
-  }, { threshold: 0.08 });
-  document.querySelectorAll('.card, .fig, .fig-row, .rq-wrap, .step, .tbl-wrap, .pull, .lit-card').forEach(el => {
-    el.classList.add('fade-up');
-    observer.observe(el);
-  });
-
-  // Animated stat counters
-  document.querySelectorAll('.stat-n[data-val]').forEach(el => {
-    const target = parseFloat(el.dataset.val);
-    const suffix = el.dataset.suffix || '';
-    const isFloat = el.dataset.float === '1';
-    let start = null;
-    const duration = 1400;
-    const step = ts => {
-      if (!start) start = ts;
-      const p = Math.min((ts - start) / duration, 1);
-      const ease = 1 - Math.pow(1 - p, 3);
-      el.textContent = (isFloat ? (target * ease).toFixed(3) : Math.round(target * ease)) + suffix;
-      if (p < 1) requestAnimationFrame(step);
-    };
-    const io = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting) { requestAnimationFrame(step); io.disconnect(); }
-    }, { threshold: 0.5 });
-    io.observe(el);
-  });
-</script>
-
-</body>
-</html>
+import pandas as pd
+import numpy as np
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import (classification_report, roc_auc_score,
+                             confusion_matrix, average_precision_score,
+                             precision_recall_fscore_support,
+                             precision_recall_curve, roc_curve)
+from sklearn.model_selection import RandomizedSearchCV, TimeSeriesSplit
+from xgboost import XGBClassifier
+from lightgbm import LGBMClassifier
+import matplotlib.pyplot as plt
+import seaborn as sns
+import os
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)
+DATA_PATH = os.path.join(PROJECT_ROOT, "data", "processed", "processed_food_crisis_data.csv")
+OUT_FIG = os.path.join(PROJECT_ROOT, "visuals", "figures")
+OUT_TBL = os.path.join(PROJECT_ROOT, "visuals", "tables")
+os.makedirs(OUT_FIG, exist_ok=True)
+os.makedirs(OUT_TBL, exist_ok=True)
+
+df = pd.read_csv(DATA_PATH)
+df = df.sort_values(["countryiso3", "product", "year", "month"]).reset_index(drop=True)
+
+FEATURES = [
+    "avg_price", "price_lag_1", "price_lag_3", "price_lag_6",
+    "pct_change_1m", "volatility_ratio_3", "volatility_ratio_6",
+    "fao_score", "month"
+]
+TARGET = "crisis_label"
+
+df_model = df[FEATURES + [TARGET, "year"]].dropna()
+X = df_model[FEATURES]
+y = df_model[TARGET]
+
+# ── Temporal Train / Val / Test Split ─────────────────────────────────────────
+# Data spans 9 years (2016-2024).
+# Test set is fixed to the most recent 2 years (2023-2024).
+# The remaining 7 years (2016-2022) are split ~5/2 into train/val so that
+# val and test are equal in length (2 years each) for comparable evaluation.
+#
+#   Train : 2016-2020  →  5 years  (~55%)  — model learns from this data
+#   Val   : 2021-2022  →  2 years  (~22%)  — model selection and threshold tuning
+#   Test  : 2023-2024  →  2 years  (~22%)  — touched only once for the final report
+
+train_mask = df_model["year"] <= 2020
+val_mask   = (df_model["year"] >= 2021) & (df_model["year"] <= 2022)
+test_mask  = df_model["year"] >= 2023
+
+X_train, y_train = X[train_mask], y[train_mask]
+X_val,   y_val   = X[val_mask],   y[val_mask]
+X_test,  y_test  = X[test_mask],  y[test_mask]
+
+n_total = len(X)
+print(f"Train : {len(X_train):>6}  ({len(X_train)/n_total*100:.1f}%)  crisis rate: {y_train.mean():.3f}")
+print(f"Val   : {len(X_val):>6}  ({len(X_val)/n_total*100:.1f}%)  crisis rate: {y_val.mean():.3f}")
+print(f"Test  : {len(X_test):>6}  ({len(X_test)/n_total*100:.1f}%)  crisis rate: {y_test.mean():.3f}")
+
+
+def evaluate(name, y_true, y_pred, y_prob):
+    auc = roc_auc_score(y_true, y_prob)
+    pr_auc = average_precision_score(y_true, y_prob)
+    p, r, f1, _ = precision_recall_fscore_support(y_true, y_pred, average="binary", zero_division=0)
+    print(f"\n=== {name} ===")
+    print(classification_report(y_true, y_pred, zero_division=0))
+    print(f"AUC-ROC : {auc:.4f}")
+    print(f"PR-AUC  : {pr_auc:.4f}")
+    return {"model": name, "auc_roc": auc, "pr_auc": pr_auc,
+            "precision": p, "recall": r, "f1": f1}
+
+
+# ── Baseline Models — evaluated on validation set ────────────────────────────
+scale = (y_train == 0).sum() / (y_train == 1).sum()
+
+lr = LogisticRegression(class_weight="balanced", max_iter=1000, solver="saga", random_state=42)
+lr.fit(X_train, y_train)
+lr_res = evaluate("Logistic Regression", y_val, lr.predict(X_val), lr.predict_proba(X_val)[:, 1])
+
+rf = RandomForestClassifier(n_estimators=200, class_weight="balanced", random_state=42, n_jobs=1)
+rf.fit(X_train, y_train)
+rf_res = evaluate("Random Forest", y_val, rf.predict(X_val), rf.predict_proba(X_val)[:, 1])
+
+xgb = XGBClassifier(n_estimators=300, max_depth=5, learning_rate=0.05,
+                    scale_pos_weight=scale, random_state=42, n_jobs=1, eval_metric="auc")
+xgb.fit(X_train, y_train)
+xgb_res = evaluate("XGBoost", y_val, xgb.predict(X_val), xgb.predict_proba(X_val)[:, 1])
+
+lgbm = LGBMClassifier(n_estimators=300, learning_rate=0.05, class_weight="balanced",
+                      random_state=42, n_jobs=1, verbose=-1)
+lgbm.fit(X_train, y_train)
+lgbm_res = evaluate("LightGBM", y_val, lgbm.predict(X_val), lgbm.predict_proba(X_val)[:, 1])
+
+# --- Feature importance (Logistic Regression — absolute coefficients) ---
+fi_lr = pd.Series(np.abs(lr.coef_[0]), index=FEATURES).sort_values(ascending=True)
+fig, ax = plt.subplots(figsize=(8, 5))
+fi_lr.plot(kind="barh", ax=ax, color="mediumpurple")
+ax.set_title("Logistic Regression — Feature Importance (|coefficient|)")
+ax.set_xlabel("|Coefficient|")
+plt.tight_layout()
+fig.savefig(f"{OUT_FIG}/08_feature_importance_lr.png", dpi=150)
+plt.close()
+
+# --- Feature importance (Random Forest) ---
+fi_rf = pd.Series(rf.feature_importances_, index=FEATURES).sort_values(ascending=True)
+fig, ax = plt.subplots(figsize=(8, 5))
+fi_rf.plot(kind="barh", ax=ax, color="steelblue")
+ax.set_title("Random Forest — Feature Importance")
+ax.set_xlabel("Importance")
+plt.tight_layout()
+fig.savefig(f"{OUT_FIG}/09_feature_importance_rf.png", dpi=150)
+plt.close()
+
+# --- Feature importance (XGBoost baseline) ---
+fi_xgb = pd.Series(xgb.feature_importances_, index=FEATURES).sort_values(ascending=True)
+fig, ax = plt.subplots(figsize=(8, 5))
+fi_xgb.plot(kind="barh", ax=ax, color="coral")
+ax.set_title("XGBoost — Feature Importance")
+ax.set_xlabel("Importance")
+plt.tight_layout()
+fig.savefig(f"{OUT_FIG}/10_feature_importance_xgb.png", dpi=150)
+plt.close()
+
+# --- Feature importance (LightGBM) ---
+fi_lgbm = pd.Series(lgbm.feature_importances_, index=FEATURES).sort_values(ascending=True)
+fig, ax = plt.subplots(figsize=(8, 5))
+fi_lgbm.plot(kind="barh", ax=ax, color="mediumseagreen")
+ax.set_title("LightGBM — Feature Importance")
+ax.set_xlabel("Importance")
+plt.tight_layout()
+fig.savefig(f"{OUT_FIG}/11_feature_importance_lgbm.png", dpi=150)
+plt.close()
+
+# --- Feature importance comparison (all 5 models) ---
+# Plotted after tuning so all five are available; built here for layout clarity.
+# LR uses |coefficient|; tree models use native feature_importances_.
+def _plot_combined_fi(models, out_path):
+    fig, axes = plt.subplots(1, len(models), figsize=(6 * len(models), 5))
+    for ax, (fi, color, title, xlabel) in zip(axes, models):
+        fi.sort_values(ascending=True).plot(kind="barh", ax=ax, color=color)
+        ax.set_title(title)
+        ax.set_xlabel(xlabel)
+    fig.suptitle("Feature Importance Comparison Across Models", fontsize=13, fontweight="bold")
+    plt.tight_layout()
+    fig.savefig(out_path, dpi=150, bbox_inches="tight")
+    plt.close()
+
+# ── XGBoost Hyperparameter Tuning ─────────────────────────────────────────────
+# TimeSeriesSplit runs only on train data; val and test are never touched here.
+param_dist = {
+    "n_estimators": [200, 300, 500],
+    "max_depth": [3, 5, 7],
+    "learning_rate": [0.01, 0.05, 0.1],
+    "subsample": [0.7, 0.8, 1.0],
+    "colsample_bytree": [0.7, 0.8, 1.0],
+    "min_child_weight": [1, 3, 5],
+    "gamma": [0, 0.1, 0.3]
+}
+
+tscv = TimeSeriesSplit(n_splits=5)
+xgb_base = XGBClassifier(scale_pos_weight=scale, random_state=42, n_jobs=1, eval_metric="auc")
+
+search = RandomizedSearchCV(
+    xgb_base,
+    param_distributions=param_dist,
+    n_iter=40,
+    scoring="roc_auc",
+    cv=tscv,
+    random_state=42,
+    verbose=2,
+    n_jobs=1
+)
+
+print("\nStarting XGBoost hyperparameter tuning...")
+search.fit(X_train, y_train)
+print(f"Best parameters : {search.best_params_}")
+print(f"CV AUC-ROC      : {search.best_score_:.4f}")
+
+best_model = search.best_estimator_
+y_prob_tuned_val = best_model.predict_proba(X_val)[:, 1]
+y_pred_tuned_val = best_model.predict(X_val)
+xgb_tuned_res = evaluate("XGBoost (tuned)", y_val, y_pred_tuned_val, y_prob_tuned_val)
+
+# --- Feature importance (tuned XGBoost) ---
+fi_tuned = pd.Series(best_model.feature_importances_, index=FEATURES).sort_values(ascending=True)
+fig, ax = plt.subplots(figsize=(8, 5))
+fi_tuned.plot(kind="barh", ax=ax, color="darkorange")
+ax.set_title("Tuned XGBoost — Feature Importance")
+ax.set_xlabel("Importance")
+plt.tight_layout()
+fig.savefig(f"{OUT_FIG}/12_feature_importance_xgb_tuned.png", dpi=150)
+plt.close()
+
+# --- Combined feature importance: LR, RF, XGBoost, LightGBM, Tuned XGBoost ---
+_plot_combined_fi(
+    [
+        (fi_lr,    "mediumpurple",   "Logistic Regression", "|Coefficient|"),
+        (fi_rf,    "steelblue",      "Random Forest",       "Importance"),
+        (fi_xgb,   "coral",          "XGBoost",             "Importance"),
+        (fi_lgbm,  "mediumseagreen", "LightGBM",            "Importance"),
+        (fi_tuned, "darkorange",     "XGBoost (tuned)",     "Importance"),
+    ],
+    f"{OUT_FIG}/13_feature_importance_comparison.png"
+)
+
+# ── Threshold Optimisation — determined on val set ───────────────────────────
+# Threshold is selected on val; applied to test to prevent leakage.
+precisions, recalls, thresholds = precision_recall_curve(y_val, y_prob_tuned_val)
+f1_scores = 2 * (precisions * recalls) / (precisions + recalls + 1e-8)
+best_idx = np.argmax(f1_scores)
+optimal_threshold = thresholds[best_idx]
+print(f"\n=== Threshold Tuning (on validation set) ===")
+print(f"Optimal threshold : {optimal_threshold:.3f}")
+print(f"Precision: {precisions[best_idx]:.4f} | Recall: {recalls[best_idx]:.4f} | F1: {f1_scores[best_idx]:.4f}")
+
+# ── Validation Comparison Table & Plots ──────────────────────────────────────
+results_val = pd.DataFrame([lr_res, rf_res, xgb_res, lgbm_res, xgb_tuned_res])
+results_val = results_val.round(4)
+print("\n=== MODEL COMPARISON (Validation) ===")
+print(results_val.to_string(index=False))
+results_val.to_csv(f"{OUT_TBL}/model_comparison_val.csv", index=False)
+
+colors = ["#d9534f", "#5bc0de", "#f0ad4e", "#5cb85c", "#9b59b6"]
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+axes[0].bar(results_val["model"], results_val["auc_roc"], color=colors)
+axes[0].set_title("AUC-ROC Comparison (Validation)")
+axes[0].set_ylabel("AUC-ROC")
+axes[0].set_ylim(0.4, 1.0)
+axes[0].tick_params(axis='x', rotation=15)
+
+axes[1].bar(results_val["model"], results_val["pr_auc"], color=colors)
+axes[1].set_title("PR-AUC Comparison (Validation)")
+axes[1].set_ylabel("PR-AUC")
+axes[1].set_ylim(0, results_val["pr_auc"].max() * 1.2)
+axes[1].tick_params(axis='x', rotation=15)
+
+plt.tight_layout()
+fig.savefig(f"{OUT_FIG}/14_model_comparison_bar.png", dpi=150)
+plt.close()
+
+# ROC curves (validation — for model selection)
+roc_models_val = [
+    ("Logistic Regression", lr.predict_proba(X_val)[:, 1],   "#d9534f"),
+    ("Random Forest",       rf.predict_proba(X_val)[:, 1],   "#5bc0de"),
+    ("XGBoost",             xgb.predict_proba(X_val)[:, 1],  "#f0ad4e"),
+    ("LightGBM",            lgbm.predict_proba(X_val)[:, 1], "#5cb85c"),
+    ("XGBoost (tuned)",     y_prob_tuned_val,                 "#9b59b6"),
+]
+
+fig, ax = plt.subplots(figsize=(8, 6))
+for name, y_prob, color in roc_models_val:
+    fpr, tpr, _ = roc_curve(y_val, y_prob)
+    auc = roc_auc_score(y_val, y_prob)
+    ax.plot(fpr, tpr, label=f"{name} (AUC={auc:.3f})", color=color, linewidth=2)
+
+ax.plot([0, 1], [0, 1], "k--", linewidth=1)
+ax.set_xlabel("False Positive Rate")
+ax.set_ylabel("True Positive Rate")
+ax.set_title("ROC Curve — Model Comparison (Validation)")
+ax.legend(loc="lower right", fontsize=9)
+plt.tight_layout()
+fig.savefig(f"{OUT_FIG}/15_roc_curves_val.png", dpi=150)
+plt.close()
+
+# ── Final Evaluation — TEST (touched only once) ───────────────────────────────
+print("\n" + "=" * 60)
+print("FINAL TEST — Best model: XGBoost (tuned)")
+print("=" * 60)
+
+y_prob_test = best_model.predict_proba(X_test)[:, 1]
+y_pred_test = (y_prob_test >= optimal_threshold).astype(int)
+test_res = evaluate("XGBoost (tuned) — TEST", y_test, y_pred_test, y_prob_test)
+
+# Confusion matrix (test set, optimal threshold applied)
+cm = confusion_matrix(y_test, y_pred_test)
+fig, ax = plt.subplots(figsize=(4, 3))
+sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", ax=ax,
+            xticklabels=["No Crisis", "Crisis"], yticklabels=["No Crisis", "Crisis"])
+ax.set_title(f"XGBoost (tuned) — Test Confusion Matrix\n(threshold={optimal_threshold:.2f})")
+plt.tight_layout()
+fig.savefig(f"{OUT_FIG}/16_confusion_matrix_xgb.png", dpi=150)
+plt.close()
+
+# ROC curve (test set — final report)
+fpr, tpr, _ = roc_curve(y_test, y_prob_test)
+fig, ax = plt.subplots(figsize=(7, 5))
+ax.plot(fpr, tpr, color="#9b59b6", linewidth=2,
+        label=f"XGBoost tuned (AUC={test_res['auc_roc']:.3f})")
+ax.plot([0, 1], [0, 1], "k--", linewidth=1)
+ax.set_xlabel("False Positive Rate")
+ax.set_ylabel("True Positive Rate")
+ax.set_title("ROC Curve — Final Test Set")
+ax.legend(loc="lower right")
+plt.tight_layout()
+fig.savefig(f"{OUT_FIG}/17_roc_curves.png", dpi=150)
+plt.close()
+
+# Save best parameters + val and test AUC (read by 05_shap_analysis.py)
+best_params_df = pd.DataFrame([search.best_params_])
+best_params_df["val_auc_roc"]  = xgb_tuned_res["auc_roc"]
+best_params_df["test_auc_roc"] = test_res["auc_roc"]
+best_params_df.to_csv(f"{OUT_TBL}/xgb_best_params.csv", index=False)
+
+# Final summary table (val + test result side by side)
+test_summary = pd.DataFrame([{
+    "model":               "XGBoost (tuned)",
+    "optimal_threshold":   round(float(optimal_threshold), 4),
+    "val_auc_roc":         round(xgb_tuned_res["auc_roc"], 4),
+    "val_pr_auc":          round(xgb_tuned_res["pr_auc"], 4),
+    "val_f1":              round(xgb_tuned_res["f1"], 4),
+    "test_auc_roc":        round(test_res["auc_roc"], 4),
+    "test_pr_auc":         round(test_res["pr_auc"], 4),
+    "test_f1":             round(test_res["f1"], 4),
+}])
+test_summary.to_csv(f"{OUT_TBL}/final_test_result.csv", index=False)
+
+print("\nDone. All metrics and figures saved.")
+
+# ── Validation Length Comparison: 1 Year vs 2 Years ──────────────────────────
+# Proof: how well does each val set represent the test set?
+# Method: train with the same XGBoost parameters under both configurations,
+#         then compare the gap between val_auc and test_auc.
+# Smaller gap → val more accurately predicts test performance → more reliable.
+
+print("\n" + "=" * 60)
+print("VALIDATION LENGTH COMPARISON: 1 YEAR vs 2 YEARS")
+print("=" * 60)
+
+configs = {
+    "Val = 1 year\n(2022)":    {"train_end": 2021, "val_start": 2022, "val_end": 2022},
+    "Val = 2 years\n(2021-22)": {"train_end": 2020, "val_start": 2021, "val_end": 2022},
+}
+
+gap_results = []
+
+for label, cfg in configs.items():
+    tr_mask = df_model["year"] <= cfg["train_end"]
+    vl_mask = (df_model["year"] >= cfg["val_start"]) & (df_model["year"] <= cfg["val_end"])
+    te_mask = df_model["year"] >= 2023
+
+    Xtr, ytr = X[tr_mask], y[tr_mask]
+    Xvl, yvl = X[vl_mask], y[vl_mask]
+    Xte, yte = X[te_mask], y[te_mask]
+
+    sc = (ytr == 0).sum() / (ytr == 1).sum()
+    params = {k: v for k, v in search.best_params_.items()}
+    params["n_estimators"]     = int(params["n_estimators"])
+    params["max_depth"]        = int(params["max_depth"])
+    params["min_child_weight"] = int(params["min_child_weight"])
+
+    m = XGBClassifier(**params, scale_pos_weight=sc, random_state=42,
+                      n_jobs=1, eval_metric="auc")
+    m.fit(Xtr, ytr)
+
+    val_auc  = roc_auc_score(yvl, m.predict_proba(Xvl)[:, 1])
+    test_auc = roc_auc_score(yte, m.predict_proba(Xte)[:, 1])
+    gap      = abs(val_auc - test_auc)
+
+    gap_results.append({
+        "Configuration": label,
+        "Train size":    int(tr_mask.sum()),
+        "Val size":      int(vl_mask.sum()),
+        "Val AUC-ROC":   round(val_auc,  4),
+        "Test AUC-ROC":  round(test_auc, 4),
+        "Gap":           round(gap,      4),
+    })
+    print(f"\n{label.replace(chr(10), ' ')}")
+    print(f"  Train: {tr_mask.sum()} | Val: {vl_mask.sum()} | Test: {te_mask.sum()}")
+    print(f"  Val AUC : {val_auc:.4f}  |  Test AUC : {test_auc:.4f}  |  Gap : {gap:.4f}")
+
+gap_df = pd.DataFrame(gap_results)
+gap_df.to_csv(f"{OUT_TBL}/val_length_comparison.csv", index=False)
+
+# Plot: val vs test AUC side by side + gap
+labels_clean = ["Val=1 year\n(2022)", "Val=2 years\n(2021-22)"]
+val_aucs  = [r["Val AUC-ROC"]  for r in gap_results]
+test_aucs = [r["Test AUC-ROC"] for r in gap_results]
+gaps      = [r["Gap"]          for r in gap_results]
+
+x = np.arange(len(labels_clean))
+width = 0.3
+
+fig, axes = plt.subplots(1, 2, figsize=(13, 5))
+
+# Left: val vs test AUC side by side
+bars1 = axes[0].bar(x - width/2, val_aucs,  width, label="Val AUC",  color="#5bc0de")
+bars2 = axes[0].bar(x + width/2, test_aucs, width, label="Test AUC", color="#9b59b6")
+axes[0].set_xticks(x)
+axes[0].set_xticklabels(labels_clean)
+axes[0].set_ylabel("AUC-ROC")
+axes[0].set_title("Val vs Test AUC-ROC")
+axes[0].set_ylim(0.4, 1.0)
+axes[0].legend()
+for bar in bars1:
+    axes[0].text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.005,
+                 f"{bar.get_height():.3f}", ha="center", va="bottom", fontsize=9)
+for bar in bars2:
+    axes[0].text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.005,
+                 f"{bar.get_height():.3f}", ha="center", va="bottom", fontsize=9)
+
+# Right: gap (smaller = more reliable)
+bar_colors = ["#e74c3c" if g == max(gaps) else "#2ecc71" for g in gaps]
+gap_bars = axes[1].bar(labels_clean, gaps, color=bar_colors, width=0.4)
+axes[1].set_ylabel("|Val AUC − Test AUC|")
+axes[1].set_title("Val-Test Gap (smaller = more reliable)")
+axes[1].set_ylim(0, max(gaps) * 1.5)
+for bar, g in zip(gap_bars, gaps):
+    axes[1].text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.001,
+                 f"{g:.4f}", ha="center", va="bottom", fontsize=10, fontweight="bold")
+
+plt.suptitle("Validation Length Comparison: Which Val Set Better Represents the Test Set?",
+             fontsize=12, fontweight="bold", y=1.02)
+plt.tight_layout()
+fig.savefig(f"{OUT_FIG}/18_val_length_comparison.png", dpi=150, bbox_inches="tight")
+plt.close()
+print(f"\n18_val_length_comparison.png saved.")
+print("\nDone. Validation length comparison complete.")
