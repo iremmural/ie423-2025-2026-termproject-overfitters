@@ -694,16 +694,13 @@
           </p>
         </div>
 
-        <h3>Why Not Accuracy?</h3>
-        <p>About 80% of records are non-crisis. A model that always predicts "no crisis" would score 80% accuracy — but it would never detect a real crisis. So we use AUC-ROC, PR-AUC, and F1 instead. These metrics focus on how well the model finds the rare crisis events, which is what actually matters.</p>
-
         <h3>Model Selection Justification</h3>
         <p>We test five models, each chosen for a specific reason:</p>
         <p><strong>Logistic Regression:</strong> A simple linear model used as our baseline. It shows whether the problem can be solved with just linear relationships. If more complex models cannot beat it, the extra complexity is not worth it.</p>
         <p><strong>Random Forest:</strong> An ensemble of decision trees that captures non-linear patterns between price lags and FAO scores. It is robust to overfitting and provides feature importance scores as an early indicator of which variables drive crisis predictions.</p>
         <p><strong>XGBoost (default):</strong> A gradient boosting model known for strong performance on imbalanced tabular data. Each round focuses on the samples the model got wrong, making it well-suited for detecting rare crisis events. Run at default settings to separate the algorithm's contribution from tuning.</p>
         <p><strong>LightGBM:</strong> Another gradient boosting model that grows trees differently from XGBoost. Included to check whether a different boosting strategy changes the results, and to make sure XGBoost's lead is not due to how it builds trees.</p>
-        <p><strong>XGBoost (tuned):</strong> Our final model. We searched 40 different combinations of key hyperparameters using TimeSeriesSplit so that future data never leaks into training. The best model was picked by F1 score and tested once on the 2023–2024 test set. The winning parameter values are: <code>max_depth = 3</code>, <code>learning_rate = 0.01</code>, <code>n_estimators = 200</code>, <code>subsample = 0.7</code>, <code>colsample_bytree = 0.7</code>, <code>min_child_weight = 1</code>, <code>gamma = 0.3</code>.</p>
+        <p><strong>XGBoost (tuned):</strong> Our final model. We searched 40 different combinations of key hyperparameters using TimeSeriesSplit so that future data never leaks into training. The best model was picked by AUC-ROC and tested once on the 2023–2024 test set. The winning parameter values are: <code>max_depth = 3</code>, <code>learning_rate = 0.01</code>, <code>n_estimators = 200</code>, <code>subsample = 0.7</code>, <code>colsample_bytree = 0.7</code>, <code>min_child_weight = 1</code>, <code>gamma = 0.3</code>.</p>
 
         <h3>Model Comparison — Validation Set</h3>
         <div class="fig">
@@ -714,6 +711,9 @@
             AUC-ROC and PR-AUC scores for all five models on the 2021–2022 validation set. XGBoost (tuned) scores the highest on both metrics. The difference between the tuned and default XGBoost shows that searching for the best hyperparameters clearly pays off [Chen &amp; Guestrin, 2016].
           </p>
         </div>
+
+        <h3>Why Not Accuracy?</h3>
+        <p>About 80% of records are non-crisis. A model that always predicts "no crisis" would score 80% accuracy — but it would never detect a real crisis. So we use AUC-ROC, PR-AUC, and F1 instead. These metrics focus on how well the model finds the rare crisis events, which is what actually matters.</p>
 
         <p style="font-size:0.78rem; font-weight:800; letter-spacing:0.14em; text-transform:uppercase; color:var(--forest); margin:1.4rem 0 0.4rem;">Model Comparison</p>
         <div class="tbl-wrap">
@@ -755,14 +755,15 @@
               <tr><td>0.20</td><td>0.14</td><td>0.96</td><td>0.244</td><td style="color:var(--muted); font-size:0.82rem;">Very high recall — too many false alarms</td></tr>
               <tr><td>0.30</td><td>0.18</td><td>0.89</td><td>0.300</td><td style="color:var(--muted); font-size:0.82rem;">—</td></tr>
               <tr><td>0.40</td><td>0.23</td><td>0.80</td><td>0.354</td><td style="color:var(--muted); font-size:0.82rem;">—</td></tr>
-              <tr style="background:rgba(32,59,42,0.08); font-weight:700;"><td>0.50 ★</td><td>0.26</td><td>0.68</td><td style="color:var(--forest);">0.376</td><td style="color:var(--forest); font-size:0.82rem;">Highest F1 — selected as optimal</td></tr>
-              <tr><td>0.60</td><td>0.38</td><td>0.32</td><td>0.348</td><td style="color:var(--muted); font-size:0.82rem;">—</td></tr>
+              <tr><td>0.50</td><td>0.26</td><td>0.68</td><td>0.376</td><td style="color:var(--muted); font-size:0.82rem;">—</td></tr>
+              <tr style="background:rgba(32,59,42,0.08); font-weight:700;"><td>0.5618 ★</td><td>0.2975</td><td>0.5400</td><td style="color:var(--forest);">0.3836</td><td style="color:var(--forest); font-size:0.82rem;">Highest F1 — selected as optimal</td></tr>
+              <tr><td>0.65</td><td>0.36</td><td>0.40</td><td>0.379</td><td style="color:var(--muted); font-size:0.82rem;">—</td></tr>
               <tr><td>0.70</td><td>0.51</td><td>0.19</td><td>0.277</td><td style="color:var(--muted); font-size:0.82rem;">—</td></tr>
               <tr><td>0.80</td><td>0.64</td><td>0.09</td><td>0.158</td><td style="color:var(--muted); font-size:0.82rem;">Very high precision — misses too many real crises</td></tr>
             </tbody>
           </table>
         </div>
-        <p style="font-size:0.83rem; color:var(--muted); margin-top:0.6rem;">The 0.50 row matches the reported validation metrics exactly. Other rows are representative samples from the full precision-recall curve. The selected threshold was applied once to the test set.</p>
+        <p style="font-size:0.83rem; color:var(--muted); margin-top:0.6rem;">The 0.50 row matches the default-threshold validation metrics. The 0.5618 row is the actual optimal found by the precision-recall curve scan. The selected threshold was applied once to the test set and never changed afterwards.</p>
 
         <h3>Final Test Set Results</h3>
         <div class="fig-row">
@@ -771,7 +772,7 @@
             <p class="fig-cap">
               <span class="fig-num">Fig. 11</span>
               <strong>How many crises did the model catch?</strong>
-              Confusion matrix on the 2023–2024 test set. True Positives = crises correctly detected 3 months in advance. False Negatives = missed crises — the most costly type of error in a humanitarian setting. We chose the threshold to minimize missed crises while keeping false alarms at a manageable level.
+              Confusion matrix on the 2023–2024 test set. True Positives = crises correctly detected 3 months in advance. False Negatives = missed crises — the most costly type of error in a humanitarian setting. We chose the threshold to minimize missed crises while keeping false alarms at a manageable level. The test set contained a total of 2,251 real crisis events. The model correctly predicted 59% of them — meaning it detected more than half of all real crises 3 months in advance.
             </p>
           </div>
           <div class="fig">
@@ -786,7 +787,7 @@
 
         <div class="lit-card">
           <span class="lit-title">How This Fits the Literature</span>
-          <p>Using machine learning to predict food crises is a growing research area. The most similar study to ours is Andrée et al. (2020), who used WFP food prices and food insecurity scores with gradient boosted trees to predict crises 3 months ahead — they reported an AUC-ROC of 0.71–0.82. Our model (AUC 0.767) produces results in the same range, but across a broader set of 60 countries. Brych et al. (2025) built a similar early warning system using CatBoost, LSTM, and SHAP for Ukraine, Moldova, and Serbia — validating our choice of explainable ML and temporal validation. Other related studies include Busker et al. (2024), who used satellite and climate data; Martini et al. (2022), who used news data; Kino et al. (2022), who worked with FAO insecurity scores; and Driver et al. (2024), who combined live price data with climate signals. Our project is unique in building a price-first system that works across 60 countries.</p>
+          <p>Using machine learning to predict food crises is a growing research area. The most similar study to ours is Andrée et al. (2020), who used WFP food prices and food insecurity scores with gradient boosted trees to predict crises 3 months ahead — they reported an AUC-ROC of 0.71–0.82. Our model (AUC 0.7194) produces results in the same range, but across a broader set of 60 countries. Brych et al. (2025) built a similar early warning system using CatBoost, LSTM, and SHAP for Ukraine, Moldova, and Serbia — validating our choice of explainable ML and temporal validation. Other related studies include Busker et al. (2024), who used satellite and climate data; Martini et al. (2022), who used news data; Kino et al. (2022), who worked with FAO insecurity scores; and Driver et al. (2024), who combined live price data with climate signals. Our project is unique in building a price-first system that works across 60 countries.</p>
         </div>
 
         <div class="pull">
@@ -982,7 +983,7 @@ python scripts/05_shap_analysis.py</pre>
       <div class="card" style="grid-column: 1 / -1;">
         <h3>Prior Work in Food Security ML</h3>
         <ul class="ref-list">
-          <li><strong>[Andrée et al., 2020]</strong> Predicting Food Crises. <em>World Bank Policy Research Working Paper No. 9412.</em> — Closest methodological parallel to this project: WFP price data + food insecurity scores, gradient boosted trees, binary crisis classification, 3-month forecast horizon, AUC-ROC as primary metric. Reported AUC range: 0.71–0.82. Our model (AUC 0.767) falls directly within this benchmark range.</li>
+          <li><strong>[Andrée et al., 2020]</strong> Predicting Food Crises. <em>World Bank Policy Research Working Paper No. 9412.</em> — Closest methodological parallel to this project: WFP price data + food insecurity scores, gradient boosted trees, binary crisis classification, 3-month forecast horizon, AUC-ROC as primary metric. Reported AUC range: 0.71–0.82. Our model (AUC 0.7194) falls directly within this benchmark range.</li>
           <li><strong>[Brych et al., 2025]</strong> Machine Learning-Based Early Warning System for Food Security Threats in Transitional Bioeconomies. <em>13th IEEE International Conference on Intelligent Data Acquisition and Advanced Computing Systems (IDAACS 2025)</em>, Gliwice, Poland, pp. 1381. — Shares the same system framing and uses CatBoost + LSTM + SHAP within a temporal validation structure; directly validates our choice of explainable ML and SHAP for food security early warning.</li>
           <li><strong>[Busker et al., 2024]</strong> Predicting Food-Security Crises in the Horn of Africa Using Machine Learning. <em>Earth's Future, 12.</em> <a href="https://doi.org/10.1029/2023EF004211" target="_blank">doi:10.1029/2023EF004211 ↗</a> — WFP price signals + ML classification, AUC-ROC evaluation; geographically narrower but methodologically equivalent.</li>
           <li><strong>[Martini et al., 2022]</strong> Predicting food crises using news streams. <em>Science Advances, 8(9).</em> <a href="https://doi.org/10.1126/sciadv.abm3449" target="_blank">doi:10.1126/sciadv.abm3449 ↗</a> — Same binary crisis definition and temporal ML framework; input signal is news rather than prices.</li>
