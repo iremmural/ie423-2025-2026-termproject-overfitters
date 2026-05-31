@@ -798,7 +798,7 @@
           </p>
         </div>
 
-        <h3>Threshold Optimisation</h3>
+        <h3>Decision Threshold Tuning</h3>
         <p>Our model gives each observation a <strong>probability between 0 and 1</strong> — for example, "this country has a 72% chance of a food crisis in the next 3 months." To turn this into a real decision ("crisis" or "no crisis"), we need a cutoff point called the <strong>threshold</strong>. Any probability at or above the threshold is labelled as a crisis; anything below is labelled as no crisis.</p>
         <p>The default threshold is 0.50, but this is not always the best choice. <strong>Lowering the threshold</strong> means the model warns more often — it catches more real crises, but also raises more false alarms. <strong>Raising the threshold</strong> means fewer false alarms, but more real crises go undetected. In a humanitarian setting, missing a real crisis is far more costly than a false alarm, so finding the right balance matters.</p>
         <p>To find this balance, we scanned many different threshold values on our <strong>validation set (2021–2022)</strong>. For each value, we calculated <strong>Precision</strong> (how often the alarm is actually correct), <strong>Recall</strong> (how many real crises are caught), and <strong>F1</strong> (the harmonic mean of both — it is high only when both precision and recall are decent). The threshold with the highest F1 score was selected as optimal. We then applied it <em>once</em> to the test set and never changed it after that point.</p>
