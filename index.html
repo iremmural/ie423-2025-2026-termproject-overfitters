@@ -222,6 +222,63 @@
     }
     .lit-card p { font-size: 0.87rem; margin: 0; color: var(--text); }
 
+    /* ── BENCHMARK VIZ ── */
+    .lit-benchmark {
+      margin-top: 1.1rem; padding: 1rem 1.2rem 0.8rem;
+      background: rgba(32,59,42,0.05); border-radius: 8px;
+      border: 1px solid rgba(32,59,42,0.13);
+    }
+    .lit-bench-head {
+      font-size: 0.67rem; font-weight: 700; letter-spacing: 0.13em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 0.9rem;
+    }
+    .lit-bench-wrap { position: relative; height: 84px; }
+    .lit-bench-track {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 9px; background: var(--border); border-radius: 5px;
+    }
+    .lit-bench-range {
+      position: absolute; top: 0; height: 100%;
+      background: rgba(32,59,42,0.25); border-radius: 5px;
+      border: 1px solid rgba(32,59,42,0.40);
+    }
+    .lit-bench-rlabel {
+      position: absolute; bottom: 13px;
+      font-size: 0.64rem; font-weight: 600; color: var(--forest-mid);
+      white-space: nowrap; transform: translateX(-50%);
+    }
+    .lit-bench-pin {
+      position: absolute; bottom: 0; width: 3px; height: 50px;
+      background: var(--harvest); border-radius: 1.5px;
+      transform: translateX(-50%);
+    }
+    .lit-bench-plabel {
+      position: absolute; bottom: 54px;
+      font-size: 0.64rem; font-weight: 700; color: var(--harvest);
+      white-space: nowrap; transform: translateX(-50%);
+      text-align: center; line-height: 1.3;
+    }
+    .lit-bench-axis {
+      display: flex; justify-content: space-between;
+      font-size: 0.65rem; color: var(--muted); margin-top: 0.35rem;
+    }
+    .lit-bench-legend {
+      display: flex; gap: 1.4rem; margin-top: 0.8rem; flex-wrap: wrap; align-items: center;
+    }
+    .lit-bench-leg {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-size: 0.73rem; color: var(--text);
+    }
+    .lit-bench-leg-rng {
+      width: 16px; height: 9px; flex-shrink: 0;
+      background: rgba(32,59,42,0.25); border: 1px solid rgba(32,59,42,0.40);
+      border-radius: 2px;
+    }
+    .lit-bench-leg-pin {
+      width: 3px; height: 13px; flex-shrink: 0;
+      background: var(--harvest); border-radius: 1.5px;
+    }
+
     /* ── FIGURES ── */
     .fig {
       margin: 1.8rem 0;
@@ -630,7 +687,7 @@
           <p class="fig-cap">
             <span class="fig-num">Fig. 6</span>
             <strong>Big global events show up clearly in price data.</strong>
-            This heatmap shows what share of a country's food products were in crisis each year, for the 25 highest-risk countries. The 2020 row (COVID-19) and 2022–2023 rows (Russia-Ukraine war, global grain price rise) are clearly visible across many countries at the same time. These real-world events leave clear patterns that machine learning can learn from.
+            This heatmap shows what share of a country's food products were in crisis each year, for the 20 highest-risk countries. The 2020 row (COVID-19) and 2022–2023 rows (Russia-Ukraine war, global grain price rise) are clearly visible across many countries at the same time. These real-world events leave clear patterns that machine learning can learn from.
           </p>
         </div>
 
@@ -714,6 +771,7 @@
 
         <h3>Why Not Accuracy?</h3>
         <p>About 80% of records are non-crisis. A model that always predicts "no crisis" would score 80% accuracy — but it would never detect a real crisis. So we use AUC-ROC, PR-AUC, and F1 instead. These metrics focus on how well the model finds the rare crisis events, which is what actually matters.</p>
+        <p>The lower F1 and PR-AUC are expected. With only 20% of records being crises a random classifier on this data would score around 0.20 PR-AUC — we reach 0.32, a 60% improvement over doing nothing. F1 is pulled down by the same imbalance: getting precision and recall high simultaneously is genuinely hard when one class is four times rarer.</p>
 
         <p style="font-size:0.78rem; font-weight:800; letter-spacing:0.14em; text-transform:uppercase; color:var(--forest); margin:1.4rem 0 0.4rem;">Model Comparison</p>
         <div class="tbl-wrap">
@@ -787,7 +845,31 @@
 
         <div class="lit-card">
           <span class="lit-title">How This Fits the Literature</span>
-          <p>Using machine learning to predict food crises is a growing research area. The most similar study to ours is Andrée et al. (2020), who used WFP food prices and food insecurity scores with gradient boosted trees to predict crises 3 months ahead — they reported an AUC-ROC of 0.71–0.82. Our model (AUC 0.7194) produces results in the same range, but across a broader set of 60 countries. Brych et al. (2025) built a similar early warning system using CatBoost, LSTM, and SHAP for Ukraine, Moldova, and Serbia — validating our choice of explainable ML and temporal validation. Other related studies include Busker et al. (2024), who used satellite and climate data; Martini et al. (2022), who used news data; Kino et al. (2022), who worked with FAO insecurity scores; and Driver et al. (2024), who combined live price data with climate signals. Our project is unique in building a price-first system that works across 60 countries.</p>
+          <p>Using machine learning to predict food crises is a growing research area. The most similar study to ours is Andrée et al. (2020), who used WFP food prices and food insecurity scores with gradient boosted trees to predict crises 3 months ahead — they reported an AUC-ROC of 0.71–0.82. Our model (AUC 0.765) produces results in the same range, but across a broader set of 60 countries. Brych et al. (2025) built a similar early warning system using CatBoost, LSTM, and SHAP for Ukraine, Moldova, and Serbia — validating our choice of explainable ML and temporal validation. Other related studies include Busker et al. (2024), who used satellite and climate data; Martini et al. (2022), who used news data; Kino et al. (2022), who worked with FAO insecurity scores; and Driver et al. (2024), who combined live price data with climate signals. Our project is unique in building a price-first system that works across 60 countries.</p>
+
+          <div class="lit-benchmark">
+            <div class="lit-bench-head">AUC-ROC — Where We Stand vs. Closest Prior Work</div>
+            <div class="lit-bench-wrap">
+              <div class="lit-bench-track">
+                <!-- Andrée et al. range 0.71–0.82; track spans 0.60–0.90 (range=0.30) -->
+                <!-- left: (0.71-0.60)/0.30 = 36.67%  width: (0.82-0.71)/0.30 = 36.67% -->
+                <div class="lit-bench-range" style="left:36.67%;width:36.67%;"></div>
+              </div>
+              <!-- range bound labels at the edges -->
+              <div class="lit-bench-rlabel" style="left:36.67%;">0.71</div>
+              <div class="lit-bench-rlabel" style="left:73.33%;">0.82</div>
+              <!-- our model: (0.765-0.60)/0.30 = 55.0% — dead centre of Andrée range -->
+              <div class="lit-bench-pin" style="left:55%;"></div>
+              <div class="lit-bench-plabel" style="left:55%;">Our Model<br>0.765</div>
+            </div>
+            <div class="lit-bench-axis">
+              <span>0.60</span><span>0.65</span><span>0.70</span><span>0.75</span><span>0.80</span><span>0.85</span><span>0.90</span>
+            </div>
+            <div class="lit-bench-legend">
+              <div class="lit-bench-leg"><div class="lit-bench-leg-rng"></div><span>Andrée et al. (2020) reported range</span></div>
+              <div class="lit-bench-leg"><div class="lit-bench-leg-pin"></div><span>Our XGBoost (tuned): 0.765</span></div>
+            </div>
+          </div>
         </div>
 
         <div class="pull">
