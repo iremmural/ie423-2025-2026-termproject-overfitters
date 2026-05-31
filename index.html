@@ -843,34 +843,6 @@
           </div>
         </div>
 
-        <div class="lit-card">
-          <span class="lit-title">How This Fits the Literature</span>
-          <p>Using machine learning to predict food crises is a growing research area. The most similar study to ours is Andrée et al. (2020), who used WFP food prices and food insecurity scores with gradient boosted trees to predict crises 3 months ahead — they reported an AUC-ROC of 0.71–0.82. Our model (AUC 0.765) produces results in the same range, but across a broader set of 60 countries. Brych et al. (2025) built a similar early warning system using CatBoost, LSTM, and SHAP for Ukraine, Moldova, and Serbia — validating our choice of explainable ML and temporal validation. Other related studies include Busker et al. (2024), who used satellite and climate data; Martini et al. (2022), who used news data; Kino et al. (2022), who worked with FAO insecurity scores; and Driver et al. (2024), who combined live price data with climate signals. Our project is unique in building a price-first system that works across 60 countries.</p>
-
-          <div class="lit-benchmark">
-            <div class="lit-bench-head">AUC-ROC — Where We Stand vs. Closest Prior Work</div>
-            <div class="lit-bench-wrap">
-              <div class="lit-bench-track">
-                <!-- Andrée et al. range 0.71–0.82; track spans 0.60–0.90 (range=0.30) -->
-                <!-- left: (0.71-0.60)/0.30 = 36.67%  width: (0.82-0.71)/0.30 = 36.67% -->
-                <div class="lit-bench-range" style="left:36.67%;width:36.67%;"></div>
-              </div>
-              <!-- range bound labels at the edges -->
-              <div class="lit-bench-rlabel" style="left:36.67%;">0.71</div>
-              <div class="lit-bench-rlabel" style="left:73.33%;">0.82</div>
-              <!-- our model: (0.765-0.60)/0.30 = 55.0% — dead centre of Andrée range -->
-              <div class="lit-bench-pin" style="left:55%;"></div>
-              <div class="lit-bench-plabel" style="left:55%;">Our Model<br>0.765</div>
-            </div>
-            <div class="lit-bench-axis">
-              <span>0.60</span><span>0.65</span><span>0.70</span><span>0.75</span><span>0.80</span><span>0.85</span><span>0.90</span>
-            </div>
-            <div class="lit-bench-legend">
-              <div class="lit-bench-leg"><div class="lit-bench-leg-rng"></div><span>Andrée et al. (2020) reported range</span></div>
-              <div class="lit-bench-leg"><div class="lit-bench-leg-pin"></div><span>Our XGBoost (tuned): 0.765</span></div>
-            </div>
-          </div>
-        </div>
 
         <div class="pull">
           <p>Yes — food price crises can be predicted 3 months in advance. XGBoost (tuned) gives the best balance between precision and recall on both the validation and test sets.</p>
